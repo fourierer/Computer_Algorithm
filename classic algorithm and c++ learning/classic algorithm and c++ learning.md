@@ -17,15 +17,15 @@ struct TreeNode{
 
 //递归遍历
 vector<int> v;
-void midOrder(TreeNode *T)
+void MidOrder(TreeNode *T)
 {
 	if(T==NULL)
 	{
 		return;
 	}
-	midOrder(T->left);
+	MidOrder(T->left);
 	v.push_back(T->val);//此处改变顺序就得到先序和后序
-	midOrder(T->right); 
+	MidOrder(T->right); 
 }
 //或者
 class Solution {
@@ -441,7 +441,7 @@ public:
         int count = 0;
         long dp = 0;
         for(int i = 0;i<nums.size();i++)
-            for(int j=i;j<nums.size();j++)
+            for(int j = i;j<nums.size();j++)
             {
                 if(i==j)
                     dp = nums[i];

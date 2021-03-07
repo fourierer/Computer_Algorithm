@@ -229,7 +229,7 @@ struct ListNode {
     ListNode(int x) : val(x), next(nullptr) {}
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
- 
+
 class Solution {
 public:
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
@@ -3673,4 +3673,59 @@ public:
 ```
 
 
+
+#### 1411.[给 N x 3 网格图涂色的方案数](https://leetcode-cn.com/problems/number-of-ways-to-paint-n-3-grid/)
+
+你有一个 n x 3 的网格图 grid ，你需要用 红，黄，绿 三种颜色之一给每一个格子上色，且确保相邻格子颜色不同（也就是有相同水平边或者垂直边的格子颜色不同）。给你网格图的行数 n 。请你返回给 grid 涂色的方案数。由于答案可能会非常大，请你返回答案对 10^9 + 7 取余的结果。
+
+递归公式推导：
+
+我们把满足要求的type都写出来，一共有 1212 种：
+
+010, 012, 020, 021, 101, 102, 120, 121, 201, 202, 210, 212
+我们可以把它们分成两类：
+
+ABC 类：三个颜色互不相同，一共有 66 种：012, 021, 102, 120, 201, 210；
+
+ABA 类：左右两侧的颜色相同，也有 66 种：010, 020, 101, 121, 202, 212。
+
+这样我们就可以把 1212 种type浓缩成了 22 种，尝试写出这两类之间的递推式。我们用 f[i][0]f[i][0] 表示 ABC 类，f[i][1]f[i][1] 表示 ABA 类。在计算时，我们可以将任意一种满足要求的涂色方法带入第 i - 1 行，并检查第 i 行的方案数，这是因为同一类的涂色方法都是等价的：
+
+第 i - 1 行是 ABC 类，第 i 行是 ABC 类：以 012 为例，那么第 i 行只能是120 或 201，方案数为 22；
+
+第 i - 1 行是 ABC 类，第 i 行是 ABA 类：以 012 为例，那么第 i 行只能是 101 或 121，方案数为 22；
+
+第 i - 1 行是 ABA 类，第 i 行是 ABC 类：以 010 为例，那么第 i 行只能是 102 或 201，方案数为 2；
+
+第 i - 1 行是 ABA 类，第 i 行是 ABA 类：以 010 为例，那么第 i 行只能是 101，121 或 202，方案数为 3。
+
+因此我们就可以写出递推式：
+$$
+\begin{cases} f[i][0] = 2 * f[i - 1][0] + 2 * f[i - 1][1] \\ f[i][1] = 2 * f[i - 1][0] + 3 * f[i - 1][1] \end{cases}
+$$
+
+```c++
+#include<iostream>
+#include<math.h>
+
+
+class Solution
+{
+public:
+    int numOfWays(int n) {
+        long fi0 = 6;
+        long fi1 = 6;
+        for(int i=2;i<=n;i++)
+        {
+            long new_fi0 = (2*fi0 + 2*fi1) % mod;//这里必须是long，当n很大时，int无法表示
+            long new_fi1 = (2*fi0 + 3*fi1) % mod;
+            fi0 = new_fi0;
+            fi1 = new_fi1;
+        }
+        return (fi0+fi1) % mod;   
+    }
+private:
+    int mod = pow(10,9) + 7;
+};
+```
 

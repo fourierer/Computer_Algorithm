@@ -799,7 +799,6 @@ public:
         }
         return pre;
     }
-
 };
 
 ListNode *Create()
@@ -1074,7 +1073,7 @@ public:
     }
     void pop() {
         if(s.top()==s_min.top())
-        s_min.pop();
+            s_min.pop();
         s.pop();
     }
     int top() {

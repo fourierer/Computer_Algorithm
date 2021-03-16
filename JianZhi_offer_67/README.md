@@ -1266,39 +1266,49 @@ private:
 解题思路：二叉搜索树的中序遍历结果是排好序的，所以按照中序遍历的方法，pRootOfTree代表当前节点，Head代表中序遍历前一个节点，realHead表示中序遍历第一个节点，即最左下角的节点。
 
 ```c++
+#include<iostream>
+
+using namespace std;
+
+struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+	TreeNode(int x) :
+			val(x), left(NULL), right(NULL) {
+	}
+};
 class Solution {
-	public:
-	TreeNode* Convert(TreeNode* pRootOfTree)
-	{
-		if(pRootOfTree==NULL)
-		return NULL;
-		ConvertSub(pRootOfTree);
-		return realHead;
-	}
-	
+public:
+    TreeNode* Convert(TreeNode* pRootOfTree)
+    {
+        if(pRootOfTree==NULL)
+            return NULL;
+        ConvertSub(pRootOfTree);
+        return realHead;
+    }
 
-	private:
-	TreeNode* Head = NULL;
-	TreeNode* realHead = NULL;
-	void ConvertSub(TreeNode* pRootOfTree)
-	{
-		if(pRootOfTree==NULL)
-		return;
-		ConvertSub(pRootOfTree->left);
-		if(Head==NULL)
-		{
-			Head = pRootOfTree;
-			realHead = pRootOfTree;
-		}
-		else
-		{
-			Head->right = pRootOfTree;
-			pRootOfTree->left = Head;
-			Head = pRootOfTree;
-		}
-		ConvertSub(pRootOfTree->right);
-	}
-
+private:
+    TreeNode* Head = NULL;
+    TreeNode* realHead = NULL;
+    void ConvertSub(TreeNode* pRootOfTree)
+    {
+        if(pRootOfTree==NULL)
+            return;
+        ConvertSub(pRootOfTree->left);
+        if(Head==NULL)
+        {
+            Head = pRootOfTree;
+            realHead = pRootOfTree;
+        }
+        else
+        {
+            Head->right = pRootOfTree;
+            pRootOfTree->left = Head;
+            Head = pRootOfTree;
+        }
+        ConvertSub(pRootOfTree->right);
+    }
 };
 ```
 
@@ -1326,7 +1336,7 @@ public:
 ```
 
 解法二：空间换时间
-使用c++中的hash数据结构map，保存vector中每个数字在数组中出现的次数，再找到次数超过一半的，代码如下（这里只是写了一个如何使用map的实例，将类中返回的$number_map$换成num就是这题的另一种解法）：
+使用c++中的hash数据结构map，保存vector中每个数字在数组中出现的次数，再找到次数超过一半的，代码如下（这里只是写了一个如何使用map的实例，将类中返回的$number\_map$换成num就是这题的另一种解法）：
 
 ```c++
 #include<iostream>
@@ -1400,38 +1410,41 @@ public:
 ```
 
 
-具体的方放有两种：1.先排好序再取前$k$个元素，快速排序或者归并排序需要$O(nlogn)$的复杂度，再乘以常数$k$还是$O(nlogn)$的复杂度；1.循环$k$次，每次取第$i,i=1,...,k$小的元素(具体方法见该部分question6)，该方法时间复杂度为$O(n)$。这里采用了第一种方法。
+具体的方法有两种：1.先排好序再取前$k$个元素，快速排序或者归并排序需要$O(nlogn)$的复杂度，再乘以常数$k$还是$O(nlogn)$的复杂度；1.循环$k$次，每次取第$i,i=1,...,k$小的元素(具体方法见该部分question6)，该方法时间复杂度为$O(n)$。这里采用了第一种方法。
 
 
 
 #### 30.连续子数组的最大和，{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和(子向量的长度至少是1)。
 
 ```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
 class Solution {
-	public:
-	int FindGreatestSumOfSubArray(vector<int> array) {
-		int len = array.size();
-		vector<int> dp(len);
-		int Max = array[0];
-		dp[0] = array[0];
-		for(int i=1;i<len;i++)
-		{
-			int max = dp[i-1]+array[i];
-			if(max>array[i])
-			{
-				dp[i]=max;
-			}
-			else
-			{
-				dp[i]=array[i];
-			}
-			if(dp[i]>Max)
-			{
-				Max = dp[i];
-			}            
-		}
-		return Max;    
-	}
+public:
+    int FindGreatestSumOfSubArray(vector<int> array) {
+        int length = array.size();
+        vector<int> dp(length);
+
+        dp[0] = array[0];
+        for(int i=0;i<length;i++)
+        {
+            if(dp[i-1]+array[i]>array[i])
+                dp[i] = dp[i-1]+array[i];
+            else
+                dp[i] = array[i];
+        }
+
+        int Max = dp[0];
+        for(int i=1;i<length;i++)
+        {
+            if(dp[i]>Max)
+                Max = dp[i];
+        }
+        return Max;
+    }
 };
 ```
 
@@ -1639,6 +1652,81 @@ public:
 
 
 #### 38.二叉树的深度。输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+
+```c++
+#include<iostream>
+#include<queue>
+
+using namespace std;
+
+struct TreeNode
+{
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+//递归写法
+// class Solution {
+// public:
+//     int TreeDepth(TreeNode* pRoot)
+//     {
+//         if(pRoot==NULL)
+//         {
+//             return 0;
+//         }
+//         else
+//         {
+//             int l = TreeDepth(pRoot->left);
+//             int r = TreeDepth(pRoot->right);
+//             return (l>r?l:r) + 1;
+//         }
+//     }
+// };
+
+//非递归写法
+class Solution{
+public:
+    int TreeDepth(TreeNode* pRoot)
+    {
+        if(pRoot==nullptr)
+            return 0;
+        
+        int length = 0;
+        queue<TreeNode*> q;
+        q.push(pRoot);
+        while(!q.empty())
+        {
+            int tmp = q.size();
+            length++;
+            vector<TreeNode*> v = pop(q);
+            for(int i = 0;i<tmp;i++)
+            {
+                if(v[i]->left)
+                    q.push(v[i]->left);
+                if(v[i]->right)
+                    q.push(v[i]->right);
+            }
+        }
+        return length;
+    }
+private:
+    vector<TreeNode*> pop(queue<TreeNode*> &q)
+    {
+        vector<TreeNode*> v;
+        while(!q.empty())
+        {
+            TreeNode* root = q.front();
+            q.pop();
+            v.push_back(root);
+        }
+        return v;
+    }
+};
+```
+
+
 
 
 

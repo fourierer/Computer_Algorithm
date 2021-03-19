@@ -1823,7 +1823,7 @@ public:
             {
                 vector<int> result;
                 for(int i=start;i<=end;i++)
-                result.push_back(i);
+                    result.push_back(i);
                 all_result.push_back(result);
                 start++;
             }

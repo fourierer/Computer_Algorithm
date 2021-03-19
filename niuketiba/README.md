@@ -353,6 +353,36 @@ private:
 
 
 
+#### NC22.给出两个有序的整数数组A和B，请将数组B合并到数组 A中，变成一个有序的数组。注意：可以假设A数组有足够的空间存放B数组的元素， A和 B中初始的元素数目分别为 m和 n。
+
+```c++
+class Solution {
+public:
+    void merge(int A[], int m, int B[], int n) {
+        int a = m-1;
+        int b = n-1;
+        for(int index=m+n-1;index>=0;index--)
+        {
+            if(a>=0&&b>=0)
+            {
+                if(A[a]>B[b])
+                    A[index] = A[a--];
+                else
+                    A[index] = B[b--];
+            }
+            else if(b>=0)
+                A[index] = B[b--];
+        }
+    }
+};
+```
+
+
+
+
+
+
+
 
 
 #### NC33.将两个有序的链表合并为一个新链表，要求新的链表是通过拼接两个链表的节点来生成的，且合并后新链表依然有序。
@@ -539,6 +569,131 @@ private:
     }
 };
 ```
+
+
+
+#### NC52.给出一个仅包含字符'(',')','{','}','['和']',的字符串，判断给出的字符串是否是合法的括号序列括号必须以正确的顺序关闭，"()"和"()[]{}"都是合法的括号序列，但"(]"和"([)]"不合法。
+```c++
+#include<iostream>
+#include<string>
+#include<stack>
+
+using namespace std;
+
+/*
+//以下这种写法不正确，会漏判"([)]"这种案例
+class Solution {
+public:
+    bool isValid(string s)
+    {
+        if(s.length()==0)
+            return true;
+        for(int i=0;i<s.length();i++)
+        {
+            if((s[i]=='(')||(s[i]=='[')||(s[i]=='{'))
+                s1.push(s[i]);
+            if((s[i]==')')||(s[i]==']')||(s[i]=='}'))
+                s2.push(s[i]);
+        }
+        if(s1.size()!=s2.size())
+            return false;
+        else
+            while(!s1.empty())
+            {
+                char s1_ele = s1.top();
+                char s2_ele = s2.top();
+                if((s1_ele=='(')&&(s2_ele!=')'))
+                    return false;
+                if((s1_ele=='[')&&(s2_ele!=']'))
+                    return false;
+                if((s1_ele=='{')&&(s2_ele!='}'))
+                    return false;
+                s1.pop();
+                s2.pop();
+            }
+            return true;
+    }
+private:
+    stack<char> s1;
+    stack<char> s2;
+};
+*/
+
+//下面代码还是会段溢出，比如"()))"
+class Solution {
+public:
+    bool isValid(string s)
+    {
+        if(s.length()==0)
+            return true;
+        if((s.length()%2==1))
+            return false;//不加会发生sk溢出，比如"())"
+        if((s[0]==')')||(s[0]==']')||(s[0]=='}'))
+            return false;
+        //cout<<"run here"<<endl;
+        for(int i=0;i<s.length();i++)
+        {
+            if((s[i]=='(')||(s[i]=='[')||(s[i]=='{'))
+                sk.push(s[i]);
+            else
+            {
+                // cout<<sk.top()<<endl;
+                // cout<<s[i]<<endl;
+                if((sk.top()=='(')&&(s[i]!=')'))
+                    return false;
+                else if((sk.top()=='[')&&(s[i]!=']'))
+                    return false;
+                else if((sk.top()=='{')&&(s[i]!='}'))
+                    return false;
+                else
+                    sk.pop();
+            }
+        }
+        if(sk.empty())
+            return true;
+        else
+            return false;
+    }
+private:
+    stack<char> sk;
+};
+
+
+class Solution {
+public:
+    bool isValid(string s) {
+        int l = s.length();
+        stack<char> st;
+        for(int i=0;i<l;i++)
+        {
+        	if(s[i] == '(')
+        		st.push(')');
+        	else if(s[i] == '[')
+        		st.push(']');
+        	else if(s[i] == '{')
+        		st.push('}');
+        	else if(st.empty())
+        		return false;
+        	else if(st.top() != s[i])
+        		return false;
+        	else
+        		st.pop();
+		}
+		return st.empty();
+    }
+};
+
+
+int main()
+{
+    Solution s;
+    string str = "()))";
+    cout<<s.isValid(str)<<endl;
+    return 0;
+}
+```
+
+
 
 
 

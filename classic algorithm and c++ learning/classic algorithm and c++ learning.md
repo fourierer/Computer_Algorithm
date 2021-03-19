@@ -988,6 +988,7 @@ vector<int> v{2};//v中有一个元素，为2；
 vector<vector<int>> v;
 v.push_back({i,j});//一次性进一个vector数组{i,j}；
 vector<vector<int>> v(n);//v中有n个二维数组，不过没有赋值，可以使用push_back进行赋值
+vector<vector<int>> flag(m, vector<int>(n, 0)); //定义m*n全0二维数组
 ```
 
 

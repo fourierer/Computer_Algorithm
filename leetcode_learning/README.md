@@ -708,6 +708,97 @@ public:
 
 
 
+#### 73.矩阵置0
+
+给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法。
+
+进阶：
+
+一个直观的解决方案是使用  O(mn) 的额外空间，但这并不是一个好的解决方案。
+一个简单的改进方案是使用 O(m + n) 的额外空间，但这仍然不是最好的解决方案。
+你能想出一个仅使用常量空间的解决方案吗？
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//使用O(mn)的空间
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        int row = matrix.size();
+        int col = matrix[0].size();
+        for(int i=0;i<row;i++)
+            for(int j=0;j<col;j++)
+                if(matrix[i][j]==0)
+                    index.push_back({i,j});
+
+        for(int i=0;i<index.size();i++)
+        {
+            vector<int> in = index[i];
+            //横排置零
+            for(int tmp=0;tmp<col;tmp++)
+                matrix[in[0]][tmp] = 0;
+            //竖列置零
+            for(int tmp=0;tmp<row;tmp++)
+                matrix[tmp][in[1]] = 0;
+        }
+    }
+private:
+    vector<vector<int>> index;
+};
+
+
+//给出官方一种空间为O(1)的解法，使用第一行和第一列来记录某个元素是否为0;
+//这样第一行和第一列的元素会被修改，所以需要再使用两个变量来记录第一行和第一列是否包含0
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = matrix[0].size();
+        int flag_col0 = false, flag_row0 = false;
+        for (int i = 0; i < m; i++) {
+            if (!matrix[i][0]) {
+                flag_col0 = true;
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            if (!matrix[0][j]) {
+                flag_row0 = true;
+            }
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (!matrix[i][j]) {
+                    matrix[i][0] = matrix[0][j] = 0;
+                }
+            }
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (!matrix[i][0] || !matrix[0][j]) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (flag_col0) {
+            for (int i = 0; i < m; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+        if (flag_row0) {
+            for (int j = 0; j < n; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+    }
+};
+```
+
+
+
 
 
 #### 75.给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
@@ -2297,87 +2388,6 @@ int main()
     cout<<out[0]<<endl;
     return 0;
 }
-using namespace std;
-
-//解法一，使用map
-class Solution {
-public:
-    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-        map<int, int> num_map1;
-        map<int, int> num_map2;
-        vector<int> v;
-        for(int i=0;i<nums1.size();i++)
-            num_map1[nums1[i]]++;
-        for(int i=0;i<nums2.size();i++)
-            num_map2[nums2[i]]++;
-        for(map<int,int>::iterator it=num_map1.begin();it!=num_map1.end();it++)
-            if(num_map2.count(it->first))
-                v.push_back(it->first);
-        return v;
-    }
-};
-
-
-//使用set
-class Solution {
-public:
-    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-        set<int> num_set1;
-        set<int> num_set2;
-        vector<int> v;
-        for(int i=0;i<nums1.size();i++)
-            num_set1.insert(nums1[i]);
-        for(int i=0;i<nums2.size();i++)
-            num_set2.insert(nums2[i]);
-        for(set<int>::iterator it=num_set1.begin();it!=num_set1.end();it++)
-            //cout<<*it<<endl;
-            if(num_set2.count(*it)==1)
-                v.push_back(*it);
-        return v;
-    }
-};
-
-//解法三、排序以及双指针
-class Solution {
-public:
-    vector<int> intersection(vector<int>& nums1, vector<int>& nums2){
-        sort(nums1.begin(), nums1.end());
-        sort(nums2.begin(), nums2.end());
-        int length1 = nums1.size(), length2 = nums2.size();
-        int index1 = 0, index2 = 0;
-        vector<int> intersection;
-        while (index1 < length1 && index2 < length2)
-        {
-            int num1 = nums1[index1];
-            int num2 = nums2[index2];
-            if (num1 == num2)
-            {
-                // 保证加入元素的唯一性
-                if (!intersection.size() || num1 != intersection.back())
-                    intersection.push_back(num1);
-                index1++;
-                index2++;
-            }
-            else if (num1 < num2)
-                index1++;
-            else
-                index2++;
-        }
-        return intersection;
-    }
-};
-
-
-int main()
-{
-    Solution s;
-    vector<int> v1(4,0);
-    vector<int> v2(4,0);
-    vector<int> out = s.intersection(v1,v2);
-    cout<<out[0]<<endl;
-    return 0;
-}
-
 ```
 
 

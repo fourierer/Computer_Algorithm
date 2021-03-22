@@ -231,6 +231,62 @@ private:
 
 
 
+#### NC14.二叉树的之子形程序遍历。给定一个二叉树，返回该二叉树的之字形层序遍历，（第一层从左向右，下一层从右向左，一直这样交替）。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr){}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right){}
+};
+
+class Solution
+{
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root)
+    {
+        vector<vector<int>> result;
+        if(root==nullptr)
+            return result;
+        queue<TreeNode*> q;
+        q.push({root});
+        int flag = 1;//1表示该层正序遍历，0表示该层逆序遍历
+        while(!q.empty())
+        {
+            vector<int> layer;
+            int size = q.size();
+            for(int i=0;i<size;i++)
+            {
+                TreeNode* node = q.front();
+                q.pop();
+                layer.push_back(node->val);
+                if(node->left)
+                    q.push(node->left);
+                if(node->right)
+                    q.push(node->right);
+            }
+            if(flag==0)
+                reverse(layer.begin(), layer.end());
+            flag = 1 - flag;
+            result.push_back(layer);
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### NC16.给定一棵二叉树，判断琪是否是自身的镜像（即：是否对称）
 
 ```c++
@@ -381,10 +437,6 @@ public:
 
 
 
-
-
-
-
 #### NC33.将两个有序的链表合并为一个新链表，要求新的链表是通过拼接两个链表的节点来生成的，且合并后新链表依然有序。
 
 ```c++
@@ -421,6 +473,75 @@ public:
         else
             cur->next = l2;
         return fake_head->next;
+    }
+};
+```
+
+
+
+#### NC45.分别按照二叉树先序，中序和后序打印所有的节点。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr){}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right){}
+};
+
+
+class Solution
+{
+public:
+    vector<vector<int>> threeOrders(TreeNode* root)
+    {
+        vector<vector<int>> result;
+        Pre(root);
+        result.push_back(pre);
+        Mid(root);
+        result.push_back(mid);
+        Post(root);
+        result.push_back(post);
+        return result;
+    }
+private:
+    vector<int> pre;
+    vector<int> mid;
+    vector<int> post;
+    void Pre(TreeNode* root)
+    {
+        vector<int> result;
+        if(root==nullptr)
+            return;
+        pre.push_back(root->val);
+        Pre(root->left);
+        Pre(root->right);
+    }
+    void Mid(TreeNode* root)
+    {
+        vector<int> result;
+        if(root==nullptr)
+            return;
+        Mid(root->left);
+        mid.push_back(root->val);
+        Mid(root->right);
+    }
+    void Post(TreeNode* root)
+    {
+        vector<int> result;
+        if(root==nullptr)
+            return;
+        Post(root->left);
+        Post(root->right);
+        post.push_back(root->val);
     }
 };
 ```

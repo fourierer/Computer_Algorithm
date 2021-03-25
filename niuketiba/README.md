@@ -479,6 +479,108 @@ public:
 
 
 
+#### NC37.给出一组区间，请合并所有重叠的区间，请保证合并后的区间按区间起点升序排列。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<math.h>
+
+using namespace std;
+
+struct Interval
+{
+    int start;
+    int end;
+    Interval(): start(0),end(0){}
+    Interval(int start, int end): start(start),end(end){}
+};
+
+class Solution
+{
+public:
+    vector<Interval> merge(vector<Interval>& intervals)
+    {
+        vector<Interval> result;
+        int size = intervals.size();
+        if(size==0)
+            return result;
+        sort(intervals.begin(),intervals.end(),[&](Interval x, Interval y){
+            return x.start<y.start;
+        });//按照第一位从小到大排序
+        for(int i=0;i<size-1;i++)
+        {
+            Interval I = intervals[i];
+            Interval J = intervals[i+1];
+            if(I.end<J.start)
+                result.push_back(I);
+            else
+            {
+                int left = min(I.start, J.start);
+                int right = max(I.end, J.end);
+                intervals[i] = Interval();
+                intervals[i+1] = Interval(left, right);
+            }
+        }
+        result.push_back(intervals[size-1]);//处理最后一个区间
+        return result;
+    }
+};
+```
+
+
+
+
+
+
+
+#### NC41.给定一个数组arr，返回arr的最长无的重复子串的长度(无重复指的是所有数字都不相同)。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<map>
+
+using namespace std;
+
+class Solution {
+public:
+    /**
+     * 
+     * @param arr int整型vector the array
+     * @return int整型
+     */
+    int maxLength(vector<int>& arr) {
+        int size = arr.size();
+        map<int, int> arr_count;
+        arr_count[arr[0]] = 0;//初始哈希中只有第一个元素
+        int ML = 1;//初始最大长度为1
+        int i=0;
+        int j=1;//j=1是即将要添加的元素
+        while(i<=j&&j<size)
+        {
+            if(arr_count.count(arr[j]))//如果当前哈希中有要添加的元素，那么从i一直删到与要添加的arr[j]不重复为止
+            {
+                //删除元素
+                while(arr[i]!=arr[j])
+                {
+                    arr_count.erase(arr[i]);
+                    i++;
+                }
+                i++;//删除到重复元素之后要再加1
+            }
+            //如果当前哈希中没有要添加的元素，那么直接加上arr[j]
+            arr_count[arr[j]] = j;
+            ML = ML>arr_count.size()?ML:arr_count.size();
+            j++;
+        }
+        return ML;
+    }
+};
+```
+
+
+
 #### NC45.分别按照二叉树先序，中序和后序打印所有的节点。
 
 ```c++
@@ -847,6 +949,161 @@ public:
                 v_map[numbers[i]]=i+1;
         }
         return result;
+    }
+};
+```
+
+
+
+#### NC72.操作给定的二叉树，将其变换为源二叉树的镜像。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(): val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x): val(x),left(nullptr),right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right): val(x),left(left), right(right){}
+};
+
+class Solution
+{
+public:
+    TreeNode* Mirror(TreeNode* pRoot)
+    {
+        if(pRoot==nullptr||(pRoot->left==nullptr&&pRoot->right==nullptr))
+            return pRoot;
+        mirror(pRoot);
+        return pRoot;
+    }
+private:
+    void mirror(TreeNode* pRoot)
+    {
+        if(pRoot==nullptr)
+            return;
+        TreeNode* tmp = pRoot->left;
+        pRoot->left = pRoot->right;
+        pRoot->right = tmp;
+        mirror(pRoot->left);
+        mirror(pRoot->right);
+    }
+};
+```
+
+
+
+#### NC101.从0,1,2,...,n这n+1个数中选择n个数，组成有序数组，请找出缺失的那个数，要求O(n)尽可能小。
+
+```c++
+class Solution {
+public:
+    /**
+     * 找缺失数字
+     * @param a int整型一维数组 给定的数字串
+     * @param aLen int a数组长度
+     * @return int整型
+     */
+    int solve(int* a, int aLen) {
+        for(int i=0;i<aLen-1;i++)
+        {
+            if(a[i+1]-a[i]!=1)
+                return a[i] + 1;
+        }
+        return a[aLen-1] + 1;
+    }
+};
+```
+
+
+
+#### NC109.给一个01矩阵，1代表是陆地，0代表海洋， 如果两个1相邻，那么这两个1属于同一个岛。我们只考虑上下左右为相邻。岛屿: 相邻陆地可以组成一个岛屿（相邻:上下左右） 判断岛屿个数。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+//递归
+class Solution {
+public:
+    int solve(vector<vector<char> >& grid) {
+        int count = 0;
+        for(int i=0;i<grid.size();i++)
+            for(int j=0;j<grid[0].size();j++)
+            {
+                if(grid[i][j]=='1')
+                {
+                    DFS(i, j, grid.size(), grid[0].size(), grid);
+                    count++;
+                }
+            }
+            return count;
+    }
+private:
+    int DFS(int i, int j, int m, int n, vector<vector<char>>& grid)
+    {
+        if(i<0||j<0||i>m-1||j>n-1||grid[i][j]=='0')
+            return 0;
+        grid[i][j] = '0';
+        DFS(i-1,j,m,n,grid);
+        DFS(i+1,j,m,n,grid);
+        DFS(i,j-1,m,n,grid);
+        DFS(i,j+1,m,n,grid);
+        return 0;
+    }
+};
+
+
+//非递归(超时)
+class Solution {
+public:
+    int solve(vector<vector<char> >& grid) {
+        int count = 0;
+        for(int i=0;i<grid.size();i++)
+            for(int j=0;j<grid[0].size();j++)
+            {
+                if(grid[i][j]=='1')
+                {
+                    q.push({i,j});
+                    count++;
+                    zeros(grid,q);
+                }
+            }
+        return count;
+    }
+private:
+    queue<vector<int>> q;
+    int zeros(vector<vector<char>>& grid, queue<vector<int>>& q)
+    {
+        while(!q.empty())
+        {
+            vector<int> index = q.front();
+            q.pop();
+            int i = index[0];
+            int j = index[1];
+            grid[i][j]=='0';
+            if(!fit(i-1,j,grid.size(),grid[0].size(),grid))
+                q.push({i-1,j});
+            if(!fit(i+1,j,grid.size(),grid[0].size(),grid))
+                q.push({i+1,j});
+            if(!fit(i,j-1,grid.size(),grid[0].size(),grid))
+                q.push({i,j-1});
+            if(!fit(i,j+1,grid.size(),grid[0].size(),grid))
+                q.push({i,j+1});
+        }
+        return 0;
+    }
+    bool fit(int i, int j, int m, int n, vector<vector<char>> grid)
+    {
+        return (i<0||j<0||i>m-1||j>n-1||grid[i][j]=='0');
     }
 };
 ```

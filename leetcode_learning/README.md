@@ -868,6 +868,102 @@ public:
 
 
 
+#### 82.删除排序链表中的重复元素II
+
+存在一个按升序排列的链表，给你这个链表的头节点 head ，请你删除链表中所有存在数字重复情况的节点，只保留原始链表中 没有重复出现 的数字。返回同样按升序排列的结果链表。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+struct ListNode
+{
+    int val;
+    ListNode* next;
+    ListNode():val(0),next(nullptr){}
+    ListNode(int x):val(x),next(nullptr){}
+    ListNode(int x, ListNode* next): val(x), next(next){}
+};
+
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(head==nullptr)
+            return head;
+        ListNode* fake_head = new ListNode(0, head);//创建一个指向head的伪节点
+        ListNode* pre = fake_head;
+        ListNode* cur = head;
+        while(cur&&cur->next)
+        {
+            if(cur->val==cur->next->val)
+            {
+                //cur = cur->next;
+                while(cur->next&&cur->val==cur->next->val)//先确保cur->next不为空
+                    cur = cur->next;
+                //此时cur->val!=cur->next->val，但是要删除所有重复的元素
+                cur = cur->next;//把重复的最后一个也删掉
+                pre->next = cur;
+            }
+            else
+            {
+                pre = cur;
+                cur = cur->next;
+            }
+        }
+        return fake_head->next;
+    }
+};
+```
+
+
+
+#### 83.删除链表中的重复元素
+
+给定一个排序链表，删除所有重复的元素，使得每个元素只出现一次。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+struct ListNode
+{
+    int val;
+    ListNode* next;
+    ListNode():val(0),next(nullptr){}
+    ListNode(int x):val(x),next(nullptr){}
+    ListNode(int x, ListNode* next): val(x), next(next){}
+};
+
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(head==nullptr)
+            return head;
+        ListNode* fake_head = new ListNode(0, head);//创建一个指向head的伪节点
+        ListNode* pre = fake_head;
+        ListNode* cur = head;
+        while(cur&&cur->next)
+        {
+            if(cur->val==cur->next->val)
+            {
+                cur = cur->next;
+                pre->next = cur;
+            }
+            else
+            {
+                pre = cur;
+                cur = cur->next;
+            }
+        }
+        return fake_head->next;
+    }
+};
+```
+
+
+
 #### 116.填充每个节点的下一个右侧节点指针
 
 解题思路采用层次遍历，在层次遍历代码的基础上增加一个for循环，在该for循环里面进行连接

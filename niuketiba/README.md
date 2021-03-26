@@ -287,6 +287,60 @@ public:
 
 
 
+#### NC15.给定一个二叉树，返回该二叉树层序遍历的结果，（从左到右，一层一层地遍历）
+
+```c++
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode():val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x):val(x),left(nullptr),right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right):val(x),left(left),right(right){}
+};
+
+class Solution {
+public:
+    vector<vector<int> > levelOrder(TreeNode* root) {
+        // write code here
+        vector<vector<int>> result;
+        if(!root)
+            return result;
+        q.push(root);
+        while(!q.empty())
+        {
+            int size = q.size();
+            vector<int> v;
+            for(int i=0;i<size;i++)
+            {
+                TreeNode* tmp = q.front();
+                q.pop();
+                v.push_back(tmp->val);
+                if(tmp->left)
+                    q.push(tmp->left);
+                if(tmp->right)
+                    q.push(tmp->right);
+            }
+            result.push_back(v);
+        }
+        return result;
+    }
+private:
+    queue<TreeNode*> q;
+};
+```
+
+
+
+
+
 #### NC16.给定一棵二叉树，判断琪是否是自身的镜像（即：是否对称）
 
 ```c++
@@ -409,6 +463,42 @@ private:
 
 
 
+#### 18.有一个NxN整数矩阵，请编写一个算法，将矩阵顺时针旋转90度。给定一个NxN的矩阵，和矩阵的阶数N,请返回旋转后的NxN矩阵,保证N小于等于300。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int> > rotateMatrix(vector<vector<int> > mat, int n) {
+        //先转置
+        for(int i=0;i<n;i++)
+            for(int j=i;j<n;j++)
+            {
+                int tmp = mat[i][j];
+                mat[i][j] = mat[j][i];
+                mat[j][i] = tmp;
+            }
+        //再根据竖直线中心对称
+        for(int i=0;i<n;i++)
+            for(int j=0;j<n/2;j++)
+            {
+                int tmp = mat[i][j];
+                mat[i][j] = mat[i][n-1-j];
+                mat[i][n-1-j] = tmp;
+            }
+        return mat;
+    }
+};
+```
+
+
+
+
+
 #### NC22.给出两个有序的整数数组A和B，请将数组B合并到数组 A中，变成一个有序的数组。注意：可以假设A数组有足够的空间存放B数组的元素， A和 B中初始的元素数目分别为 m和 n。
 
 ```c++
@@ -429,6 +519,31 @@ public:
             else if(b>=0)
                 A[index] = B[b--];
         }
+    }
+};
+```
+
+
+
+#### NC25.删除给出链表中的重复元素（链表中元素从小到大有序），使链表中的所有元素都只出现一次。
+
+```c++
+class Solution {
+public:
+    /**
+     * 
+     * @param head ListNode类 
+     * @return ListNode类
+     */
+    ListNode* deleteDuplicates(ListNode* head) {
+        // write code here
+        if(head==nullptr) return head;
+        ListNode* q = head;
+        while(q->next){
+            if(q->next->val==q->val) q->next=q->next->next;
+            else q=q->next;
+        }
+        return head;
     }
 };
 ```
@@ -473,6 +588,73 @@ public:
         else
             cur->next = l2;
         return fake_head->next;
+    }
+};
+```
+
+
+
+#### NC34.一个机器人在m×n大小的地图的左上角（起点）。机器人每次向下或向右移动。机器人要到达地图的右下角（终点）。可以有多少种不同的路径从起点走到终点？
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//数学方法，排列组合(不知道为什么会发生浮点错误)
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        // write code here
+        if(n==1)
+            return 1;
+        if(m==1)
+            return 1;
+        long count = J(m+n-2)/(J(m-1)*J(n-1));
+        return count;
+    }
+private:
+    long J(long n)
+    {
+        if(n<=1)
+            return 1;
+        return n*J(n-1);
+    }
+};
+
+
+//数学方法，排列组合
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        // write code here
+        if(m==1||n==1)
+            return 1;
+        long long result = 1;//防止溢出
+        int N = m+n-2;
+        int M = min(n-1,m-1);
+        //cout<<M<<" "<<N<<endl;
+        for(int i=1;i<=M;i++)
+        {
+            result = result*(N-i+1)/i;
+        }
+        return int(result);
+    }
+};
+
+
+//动态规划,dp[i][j]表示从(0,0)元素出发，到(i,j)的路径有多少种
+//dp[i][j] = dp[i-1][j]+dp[i][j-1]
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        // write code here
+        vector<vector<int>> dp(m, vector<int>(n,1));//生成m*n全1阵
+        for(int i=1;i<m;i++)
+            for(int j=1;j<n;j++)
+                dp[i][j] = dp[i-1][j]+dp[i][j-1];
+        return dp[m-1][n-1];
     }
 };
 ```
@@ -918,6 +1100,37 @@ int main()
 
 
 
+#### NC53.给定一个链表，删除链表的倒数第 n*n* 个节点并返回链表的头指针
+
+例如，给出的链表为: 1→2→3→4→5, n= 2.删除了链表的倒数第 n个节点之后,链表变为1→2→3→5.
+
+```c++
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        if(head==NULL)
+            return NULL;
+        ListNode* fake_head = new ListNode(0);
+        fake_head->next = head;//创建一个虚假的头结点，防止头结点被删除
+        ListNode* pre = fake_head;
+        ListNode* p = head;
+        //让p先走n-1步
+        while(n=n-1)
+            p = p->next;
+        //然后pre和p一起走
+        while(p->next!=NULL)
+        {
+            p = p->next;
+            pre = pre->next;
+        }
+        //此时p到达链表末尾，pre到达要删除节点的前一个
+        ListNode* del_next = pre->next->next;//记录要删除节点的下一个的位置
+        pre->next = del_next;//删除该节点
+        return fake_head->next;
+    }
+};
+```
+
 
 
 #### NC61.给出一个整数数组，请在数组中找出两个加起来等于目标值的数。
@@ -949,6 +1162,48 @@ public:
                 v_map[numbers[i]]=i+1;
         }
         return result;
+    }
+};
+```
+
+
+
+#### NC69.输入一个链表，输出该链表中倒数第k个结点。如果该链表长度小于k，请返回空。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+struct ListNode
+{
+    int val;
+    ListNode* next;
+    ListNode():val(0),next(nullptr){}
+    ListNode(int x):val(x),next(nullptr){}
+    ListNode(int x, ListNode* next):val(x),next(next){}
+};
+
+class Solution {
+public:
+    ListNode* FindKthToTail(ListNode* pHead, int k) {
+        // write code here 
+        ListNode* cur = pHead;
+        ListNode* pre = pHead;
+        k = k+1;//这样下面的while循环可以走k个节点
+        while(k=k-1)
+        {
+            if(cur==nullptr)
+                return nullptr;
+            cur = cur->next;
+        }
+        while(cur)
+        {
+            pre = pre->next;
+            cur = cur->next;
+        }
+        //此时pre指向倒数第k个节点
+        return pre;
     }
 };
 ```
@@ -1175,4 +1430,102 @@ private:
     }
 };
 ```
+
+
+
+#### NC134.假定你知道某只股票每一天价格的变动。你最多可以同时持有一只股票。但你可以无限次的交易（买进和卖出均无手续费）。请设计一个函数，计算你所能获得的最大收益。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 计算最大收益
+     * @param prices int整型vector 股票每一天的价格
+     * @return int整型
+     */
+    int maxProfit(vector<int>& prices) {
+        int max_profit = 0;
+        for(int i=0;i<prices.size()-1;i++)
+        {
+            int diff = prices[i+1]-prices[i];
+            if(diff>0)
+                max_profit += diff;
+        }
+        return max_profit;
+    }
+};
+```
+
+
+
+
+
+#### 135.假定你知道某只股票每一天价格的变动。你最多可以同时持有一只股票。但你最多只能进行**两次**交易（一次买进和一次卖出记为一次交易。买进和卖出均无手续费）。请设计一个函数，计算你所能获得的最大收益。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<math.h>
+
+using namespace std;
+
+//超时，通过202/214个测试用例
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int count = 2;//交易的次数，有普适性
+        int size = prices.size();
+        vector<vector<int>> dp(count+1, vector<int>(size,0));//初始化(k+1)*size的全0数组
+        //对交易次数遍历
+        for(int k=1;k<=count;k++)
+        {
+            //对天数遍历
+            for(int i=1;i<size;i++)
+            {
+                //假设第k次交易是在第j天买入，第i天卖出，找最大利润
+                int max_profit = prices[i]-prices[0];//初始化最大利润是第一天买入，这里是在i循环的里面初始化的
+                for(int j=1;j<=i;j++)
+                    max_profit = max(max_profit,prices[i]-prices[j]+dp[k-1][j-1]);
+                dp[k][i] = max(dp[k][i-1], max_profit);
+            }
+        }
+        return dp[count][size-1];
+    }
+};
+
+//优化减少一个循环，在上面代码中要求第i天之前的可以获得最大利润的第j天
+//这里转换下思路，求最大利润相当于求最小成本，即prices[i]-prices[j]+dp[k-1][j-1]=prices[i]-(prices[j]-dp[k-1][j-1])
+//在对i循环时，就可以维护一个最小成本
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int count = 2;//交易的次数，有普适性
+        int size = prices.size();
+        vector<vector<int>> dp(count+1, vector<int>(size,0));//初始化(k+1)*size的全0数组
+        //对交易次数遍历
+        for(int k=1;k<=count;k++)
+        {
+            //对天数遍历
+            int min_cost = prices[0];//初始化最小成本是第一天价格，这里是在i循环的外面初始化的
+            for(int i=1;i<size;i++)
+            {
+                //假设第k次交易是在第j天买入，第i天卖出，找最大利润
+                min_cost = min(min_cost,prices[i]-dp[k-1][i-1]);
+                dp[k][i] = max(dp[k][i-1], prices[i]-min_cost);
+            }
+        }
+        return dp[count][size-1];
+    }
+};
+```
+
+
+
+
 

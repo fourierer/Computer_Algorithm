@@ -463,7 +463,7 @@ private:
 
 
 
-#### 18.有一个NxN整数矩阵，请编写一个算法，将矩阵顺时针旋转90度。给定一个NxN的矩阵，和矩阵的阶数N,请返回旋转后的NxN矩阵,保证N小于等于300。
+#### NC18.有一个NxN整数矩阵，请编写一个算法，将矩阵顺时针旋转90度。给定一个NxN的矩阵，和矩阵的阶数N,请返回旋转后的NxN矩阵,保证N小于等于300。
 
 ```c++
 #include<iostream>
@@ -496,6 +496,38 @@ public:
 ```
 
 
+
+#### NC19.给定一个数组arr，返回子数组的最大累加和
+
+例如，arr = [1, -2, 3, 5, -2, 6, -1]，所有子数组中，[3, 5, -2, 6]可以累加出最大的和12，所以返回12.题目保证没有全为负数的数据
+
+```c++
+#include<iostream>
+#include<vector>
+#include<math.h>
+
+using namespace std;
+
+class Solution {
+public:
+    int maxsumofSubarray(vector<int>& arr) {
+        // write code here
+        int size = arr.size();
+        //dp[i]表示以arr[i]为最后一个数字的最长无重复子串的长度
+        vector<int> dp(size);
+        dp[0] = arr[0];
+        for(int i=0;i<size;i++)
+        {
+            dp[i] = max(dp[i-1] + arr[i], arr[i]);
+        }
+        //找dp中最大的数
+        int M = INT_MIN;
+        for(int i=0;i<size;i++)
+            M = max(M, dp[i]);
+        return M;
+    }
+};
+```
 
 
 
@@ -1472,6 +1504,60 @@ private:
 
 
 
+#### NC91.给定数组arr，设长度为n，输出arr的最长递增子序列。（如果有多个答案，请输出其中字典序最小的）
+
+这一题没有AC，但思路应该没问题，先求该数组最长递增子序列的长度M，再找长度为M且字典序最小的子序列数组。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> LIS(vector<int>& arr) {
+        // write code here
+        int size = arr.size();
+        //dp[i]表示以第i个元素结尾的最长的递增子序列长度
+        vector<int> dp(size, 1);
+        int M = 1;//全局最长递增子序列长度
+        for(int i=1;i<size;i++)
+        {
+            for(int j=0;j<i;j++)
+                if(arr[i]>arr[j])
+                {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                    M = max(M, dp[i]);
+                }
+        }
+        
+        vector<int> result;
+        //依次计算dp中数值为M,M-1,,M-2,...,1，且在arr最小的数，保证对应的索引值可以依次递减
+        int up = dp.size();
+        int index = up;
+        for(int m = M;m>=1;m--)
+        {
+            int value = INT_MAX;
+            //只在[0,up]中寻找，因为长度为m的为up,当寻找长度为m-1的时候可以限定范围[0,up]
+            for(int i=0;i<up;i++)
+            {
+                if(dp[i]==m&&arr[i]<value)
+                {
+                    index = i;
+                    value = arr[i];
+                }
+            }
+            up = index;
+            result.push_back(value);
+        }
+
+        reverse(result.begin(),result.end());
+        return result;
+    }
+};
+```
+
 
 
 #### NC101.从0,1,2,...,n这n+1个数中选择n个数，组成有序数组，请找出缺失的那个数，要求O(n)尽可能小。
@@ -1492,6 +1578,33 @@ public:
                 return a[i] + 1;
         }
         return a[aLen-1] + 1;
+    }
+};
+```
+
+
+
+#### NC103.写出一个程序，接受一个字符串，然后输出该字符串反转后的字符串。（字符串长度不超过1000）
+
+```c++
+class Solution {
+public:
+    string solve(string str) {
+        // write code here
+        int length = str.size();
+        if(length==0)
+            return str;
+        int i = 0;
+        int j = length - 1;
+        while(i<j)
+        {
+            char tmp = str[i];
+            str[i] = str[j];
+            str[j] = tmp;
+            i++;
+            j--;
+        }
+        return str;
     }
 };
 ```

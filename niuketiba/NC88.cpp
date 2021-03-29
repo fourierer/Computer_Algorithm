@@ -1,14 +1,12 @@
-//使用快速排序寻找第k大的数
 #include<iostream>
 #include<vector>
 
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    int find_max_k(vector<int>& v, int k)
-    {
+    int findKth(vector<int> v, int n, int k) {
+        // write code here
         int result = solve(v, 0, v.size()-1, k);
         return result;
     }
@@ -16,7 +14,7 @@ private:
     int solve(vector<int>& a, int start, int end, int k)
     {
         int mid = divide(a, start, end);
-        int length_of_right = end - mid + 1;
+        int length_of_right = end - mid;
         if(length_of_right==k-1)
             return a[mid];
         else if(length_of_right>k-1)
@@ -55,20 +53,13 @@ private:
 int main()
 {
     vector<int> v;
-    v.push_back(2);
+    v.push_back(1);
     v.push_back(3);
     v.push_back(5);
-    v.push_back(1);
-    v.push_back(4);
-    v.push_back(6);
-    v.push_back(7);
+    v.push_back(2);
+    v.push_back(2);
     Solution s;
-    int result = s.find_max_k(v, 2);
+    int result = s.findKth(v,5,3);
     cout<<result<<endl;
-    //由于s.find_max函数中的v写的引用，所以会对原数组的顺序产生影响
-    //去除引用就会输出原数组
-    for(int i=0;i<v.size();i++)
-        cout<<v[i]<<endl;
     return 0;
 }
-

@@ -1958,6 +1958,32 @@ public:
 
 
 
+#### 190.颠倒二进制位
+
+颠倒给定的 32 位无符号整数的二进制位。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    uint32_t reverseBits(uint32_t n) {
+        uint32_t result = 0;
+        for(int i=0;i<32&&n>0;i++)
+        {
+            uint32_t tmp = n & 1;//获取n最右边一位
+            result = result | tmp<<(31 - i);//将最后一位左移31-i位，即移到反装的位置，随后和result做或运算
+            n >>= 1;//n右移一位
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### 191.位1的个数
 
 编写一个函数，输入是一个无符号整数，返回其二进制表达式中数字位数为 ‘1’ 的个数（也被称为[汉明重量](https://baike.baidu.com/item/汉明重量)）

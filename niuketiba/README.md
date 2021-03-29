@@ -1388,7 +1388,7 @@ private:
 
 
 
-#### 78.输入一个链表，反转链表后，输出新链表的表头。
+#### NC78.输入一个链表，反转链表后，输出新链表的表头。
 
 ```c++
 /**
@@ -1452,6 +1452,78 @@ public:
         return p;
     }
 };
+```
+
+
+
+#### NC88.有一个整数数组，请你根据快速排序的思路，找出数组中第K大的数。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int findKth(vector<int> v, int n, int k) {
+        // write code here
+        int result = solve(v, 0, v.size()-1, k);
+        return result;
+    }
+private:
+    int solve(vector<int>& a, int start, int end, int k)
+    {
+        int mid = divide(a, start, end);
+        int length_of_right = end - mid;
+        if(length_of_right==k-1)
+            return a[mid];
+        else if(length_of_right>k-1)
+            return solve(a, mid+1, end, k);
+        else
+            return solve(a, start, mid-1, k-length_of_right-1);
+    }
+    int divide(vector<int>& a, int start, int end)
+    {
+        if(start>=end)
+            return start;
+
+        int i = start;
+        int j = end;
+        int pivot = a[start];
+
+        while(i<j)
+        {
+            while(a[j]>=pivot&&j>i)
+                j--;
+            swap(a[i], a[j]);
+            while(a[i]<=pivot&&i<j)
+                i++;
+            swap(a[i], a[j]);
+        }
+        return i;//此时i==j
+    }
+    void swap(int& x, int& y)
+    {
+        int temp = x;
+        x = y;
+        y = temp;
+    }
+};
+
+int main()
+{
+    vector<int> v;
+    v.push_back(1);
+    v.push_back(3);
+    v.push_back(5);
+    v.push_back(2);
+    v.push_back(2);
+    Solution s;
+    int result = s.findKth(v,5,3);
+    cout<<result<<endl;
+    return 0;
+}
 ```
 
 
@@ -1611,6 +1683,38 @@ public:
 
 
 
+#### NC105.请实现有重复数字的升序数组的二分查找。给定一个 元素有序的（升序）整型数组 nums 和一个目标值 target ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。
+
+这道题是返回最左边的索引，参考leetcode34题，还可以返回最右边的索引。
+
+```c++
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        // write code here
+        int left = 0;
+        int right = nums.size()-1;
+        int ans = 0;
+        while(left<=right)
+        {
+            int mid = (left+right)/2;
+            if(nums[mid]>=target)
+            {
+                right = mid - 1;
+                ans = mid;
+            }
+            else
+                left = mid + 1;
+        }
+        if(ans>=0&&ans<nums.size()&&nums[ans]==target)
+            return ans;
+        return -1;
+    }
+};
+```
+
+
+
 #### NC109.给一个01矩阵，1代表是陆地，0代表海洋， 如果两个1相邻，那么这两个1属于同一个岛。我们只考虑上下左右为相邻。岛屿: 相邻陆地可以组成一个岛屿（相邻:上下左右） 判断岛屿个数。
 
 ```c++
@@ -1693,6 +1797,79 @@ private:
     bool fit(int i, int j, int m, int n, vector<vector<char>> grid)
     {
         return (i<0||j<0||i>m-1||j>n-1||grid[i][j]=='0');
+    }
+};
+```
+
+
+
+#### NC119.给定一个数组，找出其中最小的K个数。例如数组元素是4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4。如果K>数组的长度，那么返回一个空的数组。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> GetLeastNumbers_Solution(vector<int> input, int k) {
+        vector<int> result;
+        if(input.size()<k)
+            return result;
+        for(int i=0;i<k;i++)
+        {
+            int index = input.size() - i;
+            int ith_min = find_max_k(input, index);
+            result.push_back(ith_min);
+        }
+        return result;
+    }
+private:
+    int find_max_k(vector<int> v, int k)
+    {
+        int result = solve(v, 0, v.size()-1, k);
+        return result;
+    }
+
+    int solve(vector<int>& a, int start, int end, int k)
+    {
+        int mid = divide(a, start, end);
+        int length_of_right = end - mid;
+        if(length_of_right==k-1)
+            return a[mid];
+        else if(length_of_right>k-1)
+            return solve(a, mid+1, end, k);
+        else
+            return solve(a, start, mid-1, k-length_of_right-1);
+    }
+
+    int divide(vector<int>& a, int start, int end)
+    {
+        if(start>=end)
+            return start;
+
+        int i = start;
+        int j = end;
+        int pivot = a[start];
+
+        while(i<j)
+        {
+            while(a[j]>=pivot&&j>i)
+                j--;
+            swap(a[i], a[j]);
+            while(a[i]<=pivot&&i<j)
+                i++;
+            swap(a[i], a[j]);
+        }
+        return i;//此时i==j
+    }
+
+    void swap(int& x, int& y)
+    {
+        int temp = x;
+        x = y;
+        y = temp;
     }
 };
 ```

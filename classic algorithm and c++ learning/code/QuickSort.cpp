@@ -21,11 +21,11 @@ private:
 
         while(i<j)
         {
-            while(a[j]>pivot&&j>i)
+            while(a[j]>=pivot&&j>i)
                 j--;
             swap(a[i], a[j]);
 
-            while(a[i]<pivot&&i<j)
+            while(a[i]<=pivot&&i<j)
                 i++;
             swap(a[i], a[j]);
         }

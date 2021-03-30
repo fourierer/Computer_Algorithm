@@ -875,6 +875,48 @@ public:
 
 
 
+#### 74.搜索二维矩阵
+
+编写一个高效的算法来判断 m x n 矩阵中，是否存在一个目标值。该矩阵具有如下特性：
+
+每行中的整数从左到右按升序排列。
+每行的第一个整数大于前一行的最后一个整数。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int m = matrix.size();
+        int n = matrix[0].size();
+        if(m==1&&n==1)
+            return matrix[0][0]==target;
+        for(int i=m-1,j=0;i>=0&&j<n;)
+        {
+            if(matrix[i][j]==target)
+                return true;
+            else if(matrix[i][j]>target)
+            {
+                i--;
+                continue;
+            }
+            else
+            {
+                j++;
+                continue;
+            }
+        }
+        return false;
+    }
+};
+```
+
+
+
 
 
 #### 75.颜色分类
@@ -1952,6 +1994,140 @@ public:
             result = max(result,dp[k][size-1]);
         }
         return result;
+    }
+};
+```
+
+
+
+#### 189.旋转数组
+
+给定一个数组，将数组中的元素向右移动 `k` 个位置，其中 `k` 是非负数。
+
+尽可能想出更多的解决方案，至少有三种不同的方法可以解决这个问题。你可以使用空间复杂度为 O(1) 的 **原地** 算法解决这个问题吗？
+
+```c++
+//下面这种写法有bug，比如[-1,-100,3,99],k=2，此时只有-1和3会调换位置，其余的值不变
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        if(nums.size()==0||nums.size()==k||k==0)
+            return;
+        int index = 0;//当前要移动的索引
+        int pre = nums[index];
+        index = (index + k) % nums.size();
+        while(index)
+        {
+            int cur = nums[index];
+            nums[index] = pre;
+            pre = cur;
+            index = (index + k) % nums.size();     
+        }
+        //当index回到0时，此时还有一个数pre没有移动到0
+        nums[index] = pre;
+    }
+};
+
+//改进之后发现还是有bug，反例[1,2,3,4,5,6],k=4
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        if(nums.size()==0||nums.size()==k||k==0)
+            return;
+        if(nums.size()%k!=0)
+        {
+            int index = 0;//当前要移动的索引
+            int pre = nums[index];
+            index = (index + k) % nums.size();
+            while(index)
+            {
+                int cur = nums[index];
+                nums[index] = pre;
+                pre = cur;
+                index = (index + k) % nums.size();     
+            }
+            //当index回到0时，此时还有一个数pre没有移动到0
+            nums[index] = pre;
+        }
+        else
+        {
+            for(int i=0;i<k;i++)
+            {
+                int index = i;//当前要移动的索引
+                int pre = nums[index];
+                index = (index + k) % nums.size();
+                while(index!=i)
+                {
+                    int cur = nums[index];
+                    nums[index] = pre;
+                    pre = cur;
+                    index = (index + k) % nums.size();     
+                }
+                //当index回到0时，此时还有一个数pre没有移动到0
+                nums[index] = pre;
+            }
+        }
+    }
+};
+
+
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        if(nums.size()==0||nums.size()==k||k==0)
+            return;
+
+        if(nums.size()%k==0)//如果nums.size()是k的倍数，则需要重复k次跳跃遍历过程
+        {
+            for(int i=0;i<k;i++)
+            {
+                int index = i;//当前要移动的索引
+                int pre = nums[index];
+                index = (index + k) % nums.size();
+                while(index!=i)
+                {
+                    int cur = nums[index];
+                    nums[index] = pre;
+                    pre = cur;
+                    index = (index + k) % nums.size();     
+                }
+                //当index回到0时，此时还有一个数pre没有移动到0
+                nums[index] = pre;
+            }
+        }
+        else if(nums.size()%(nums.size()-k)==0)//如果nums.size()是(nums.size()-k)的倍数，则需要重复(nums.size()-k)次跳跃遍历过程
+        {
+            for(int i=0;i<nums.size()-k;i++)
+            {
+                int index = i;//当前要移动的索引
+                int pre = nums[index];
+                index = (index + k) % nums.size();
+                while(index!=i)
+                {
+                    int cur = nums[index];
+                    nums[index] = pre;
+                    pre = cur;
+                    index = (index + k) % nums.size();     
+                }
+                //当index回到0时，此时还有一个数pre没有移动到0
+                nums[index] = pre;
+            }
+        }
+        else
+        {
+            int index = 0;//当前要移动的索引
+            int pre = nums[index];
+            index = (index + k) % nums.size();
+            while(index)
+            {
+                int cur = nums[index];
+                nums[index] = pre;
+                pre = cur;
+                index = (index + k) % nums.size();     
+            }
+            //当index回到0时，此时还有一个数pre没有移动到0
+            nums[index] = pre;
+        }
     }
 };
 ```

@@ -449,6 +449,42 @@ public:
 
 
 
+#### 42.接雨水
+
+给定 *n* 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int sum = accumulate(height.begin(), height.end(), 0);//对height数组求和，0是和初始值
+        int volume = 0;//总体积
+        int high = 1;//当前高度
+
+        //双指针
+        int left = 0;
+        int right = height.size() - 1;
+        while(left<=right)
+        {
+            while(left<=right&&height[left]<high)
+                left++;
+            while(left<=right&&height[right]<high)
+                right--;
+            volume += right - left + 1;
+            high++;
+        }
+        return volume - sum;
+    }
+};
+```
+
+
+
 #### 46.全排列
 
 给定一个 **没有重复** 数字的序列，返回其所有可能的全排列。
@@ -988,6 +1024,39 @@ public:
 
 
 
+#### 78.子集
+
+给你一个整数数组 `nums` ，数组中的元素 **互不相同** 。返回该数组所有可能的子集（幂集）。解集 **不能** 包含重复的子集。你可以按 **任意顺序** 返回解集。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> result;
+        //mask<(1<<nums.size())，假设nums.size()为4，则mask从0000到1111
+        for(int mask=0;mask<(1<<nums.size());mask++)
+        {
+            vector<int> tmp;
+            for(int i=0;i<nums.size();i++)
+            {
+                //根据mask来确定哪些数添加进当前数组
+                if(mask&(1<<i))
+                    tmp.push_back(nums[i]);
+            }
+            result.push_back(tmp);
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### 82.删除排序链表中的重复元素II
 
 存在一个按升序排列的链表，给你这个链表的头节点 head ，请你删除链表中所有存在数字重复情况的节点，只保留原始链表中 没有重复出现 的数字。返回同样按升序排列的结果链表。
@@ -1038,6 +1107,10 @@ public:
 
 
 
+
+
+
+
 #### 83.删除链表中的重复元素
 
 给定一个排序链表，删除所有重复的元素，使得每个元素只出现一次。
@@ -1078,6 +1151,51 @@ public:
             }
         }
         return fake_head->next;
+    }
+};
+```
+
+
+
+#### 90.子集II
+
+给你一个整数数组 nums ，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。解集 不能 包含重复的子集。返回的解集中，子集可以按 任意顺序 排列。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        vector<vector<int>> result;
+        //先将数组排序
+        sort(nums.begin(),nums.end());
+        //mask<(1<<nums.size())，假设nums.size()为4，则mask从0000到1111
+        for(int mask=0;mask<(1<<nums.size());mask++)
+        {
+            vector<int> tmp;
+            bool flag = true;
+            for(int i=0;i<nums.size();i++)
+            {
+                //根据mask来确定哪些数添加进当前数组
+                if(mask&(1<<i))
+                {
+                    //如果当前mask中第i位为1,第i-1位为0，并且nums[i]=nums[i-1]，则当前mask确定的数组舍弃
+                    if(i>0&&(mask>>(i-1) & 1)==0 && nums[i]==nums[i-1])
+                    {
+                        flag = false;
+                        break;
+                    }
+                    tmp.push_back(nums[i]);
+                }
+            }
+            if(flag)
+                result.push_back(tmp);
+        }
+        return result;
     }
 };
 ```
@@ -1936,6 +2054,53 @@ public:
 //解法二、自底向上
 //不会......
 
+```
+
+
+
+#### 150.逆波兰表达式求值
+
+根据[ 逆波兰表示法](https://baike.baidu.com/item/逆波兰式/128437)，求表达式的值。有效的算符包括 `+`、`-`、`*`、`/` 。每个运算对象可以是整数，也可以是另一个逆波兰表达式。
+
+思路：遍历序列，遇到数字则进栈，遇到运算符需要将栈最上面两个数进行该运算符对应的运算，将结果推入栈中，再继续遍历序列。
+
+```c++
+#include<iostream>
+#include<string>
+#include<vector>
+#include<stack>
+
+using namespace std;
+
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        int size = tokens.size();
+        for(int i=0;i<size;i++)
+        {
+            if(tokens[i]!="+"&&tokens[i]!="-"&&tokens[i]!="*"&&tokens[i]!="/")
+                s.push(stoi(tokens[i]));
+            else
+            {
+                int num1 = s.top();
+                s.pop();
+                int num2 = s.top();
+                s.pop();
+                if(tokens[i]=="+")
+                    s.push(num2 + num1);
+                else if(tokens[i]=="-")
+                    s.push(num2 - num1);
+                else if(tokens[i]=="*")
+                    s.push(num2 * num1);
+                else if(tokens[i]=="/")
+                    s.push(num2 / num1);
+            }
+        }
+        return s.top();
+    }
+private:
+    stack<int> s;
+};
 ```
 
 
@@ -3994,6 +4159,63 @@ int main()
 
 
 
+#### 1006.笨阶乘
+
+通常，正整数 n 的阶乘是所有小于或等于 n 的正整数的乘积。例如，factorial(10) = 10 * 9 * 8 * 7 * 6 * 5 * 4 * 3 * 2 * 1。
+
+相反，我们设计了一个笨阶乘 clumsy：在整数的递减序列中，我们以一个固定顺序的操作符序列来依次替换原有的乘法操作符：乘法(*)，除法(/)，加法(+)和减法(-)。
+
+例如，clumsy(10) = 10 * 9 / 8 + 7 - 6 * 5 / 4 + 3 - 2 * 1。然而，这些运算仍然使用通常的算术运算顺序：我们在任何加、减步骤之前执行所有的乘法和除法步骤，并且按从左到右处理乘法和除法步骤。
+
+另外，我们使用的除法是地板除法（floor division），所以 10 * 9 / 8 等于 11。这保证结果是一个整数。
+
+实现上面定义的笨函数：给定一个整数 N，它返回 N 的笨阶乘。
+
+```c++
+#include<iostream>
+#include<stack>
+
+using namespace std;
+
+class Solution {
+public:
+    int clumsy(int N) {
+        s.push(N);
+        N--;
+        int index = 0;
+        
+        while(N>0)
+        {
+            if(index%4==0)
+                s.top() *= N;
+            else if(index%4==1)
+                s.top() /= N;
+            else if(index%4==2)
+                s.push(N);
+            else
+                s.push(-N);
+            index++;
+            N--;
+        }
+        
+        //对栈中元素求和
+        int sum = 0;
+        while(!s.empty())
+        {
+            sum += s.top();
+            s.pop();
+        }
+        return sum;
+}
+private:
+    stack<int> s;
+};
+```
+
+
+
+
+
 #### 1030.距离顺序排列矩阵单元格
 
 给出 R 行 C 列的矩阵，其中的单元格的整数坐标为 (r, c)，满足 0 <= r < R 且 0 <= c < C。另外，在该矩阵中给出了一个坐标为 (r0, c0) 的单元格。返回矩阵中的所有单元格的坐标，并按到 (r0, c0) 的距离从最小到最大的顺序排，其中，两单元格(r1, c1) 和 (r2, c2) 之间的距离是曼哈顿距离，|r1 - r2| + |c1 - c2|。（可以按任何满足此条件的顺序返回答案。）
@@ -4105,6 +4327,43 @@ public:
                 return arr2_map.count(y)?false:x<y;
         });
         return arr1;
+    }
+};
+```
+
+
+
+#### 1143.最长公共子序列
+
+给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
+
+一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+
+例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
+两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<string>
+
+using namespace std;
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size();
+        int n = text2.size();
+        vector<vector<int>> dp(m+1, vector<int>(n+1,0));
+        for(int i=1;i<m+1;i++)
+            for(int j=1;j<n+1;j++)
+            {
+                if(text1[i-1]==text2[j-1])
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                else
+                    dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+            }
+        return dp[m][n];
     }
 };
 ```

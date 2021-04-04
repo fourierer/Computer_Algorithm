@@ -2642,6 +2642,78 @@ public:
 
 
 
+#### 227.基本计算器II
+
+给你一个字符串表达式 s ，请你实现一个基本计算器来计算并返回它的值。整数除法仅保留整数部分。
+
+示例 1：输入：s = "3+2*2"
+输出：7
+示例 2：输入：s = " 3/2 "
+输出：1
+示例 3：输入：s = " 3+5 / 2 "
+输出：5
+
+```c++
+#include<iostream>
+#include<string>
+#include<stack>
+
+using namespace std;
+
+class Solution {
+public:
+    int calculate(string s) {
+        int length = s.size();
+        int nums = 0;
+        for(int i=0;i<length;i++)
+        {
+            if(s[i]!='+'&&s[i]!='-'&&s[i]!='*'&&s[i]!='/'&&s[i]!=' ')//防止字符串中有空格
+            {
+                nums = nums*10 + int(s[i]-'0');//计算连续数字表示的数
+            }
+            if(s[i]=='+'||s[i]=='-'||s[i]=='*'||s[i]=='/'||i==length-1)//这里一定要添加i==n-1判断条件，因为遍历到最后一个数也需要计算结果
+            {
+                if(cur_operator=='+')
+                    stk.push(nums);
+                else if(cur_operator=='-')
+                    stk.push(-nums);
+                else if(cur_operator=='*')
+                    stk.top() *= nums;
+                else if(cur_operator=='/')
+                    stk.top() /= nums;
+                cur_operator = s[i];
+                nums = 0;
+            }
+        }
+        //cout<<cur_operator<<endl;
+        int result = 0;
+        while(!stk.empty())
+        {
+            //cout<<stk.top()<<endl;
+            result += stk.top();
+            stk.pop();
+        }
+        return result;
+    }
+
+private:
+    char cur_operator = '+';//初始运算符为+号
+    stack<int> stk;
+};
+
+int main()
+{
+    string s = "3/2";
+    bool flag = s[1]=='/';
+    cout<<flag<<endl;
+    return 0;
+}
+```
+
+
+
+
+
 #### 242.有效的字母移位词
 
 给定两个字符串 *s* 和 *t* ，编写一个函数来判断 *t* 是否是 *s* 的字母异位词。
@@ -3566,6 +3638,75 @@ public:
             }
         }
         return result;
+    }
+};
+```
+
+
+
+#### 781.森林中的兔子
+
+森林中，每个兔子都有颜色。其中一些兔子（可能是全部）告诉你还有多少其他的兔子和自己有相同的颜色。我们将这些回答放在 answers 数组里。返回森林中兔子的最少数量。
+
+```
+示例:
+输入: answers = [1, 1, 2]
+输出: 5
+解释:
+两只回答了 "1" 的兔子可能有相同的颜色，设为红色。
+之后回答了 "2" 的兔子不会是红色，否则他们的回答会相互矛盾。
+设回答了 "2" 的兔子为蓝色。
+此外，森林中还应有另外 2 只蓝色兔子的回答没有包含在数组中。
+因此森林中兔子的最少数量是 5: 3 只回答的和 2 只没有回答的。
+
+输入: answers = [10, 10, 10]
+输出: 11
+
+输入: answers = []
+输出: 0
+```
+
+使用贪心策略：
+
+两只相同颜色的兔子看到的其他同色兔子数必然是相同的。反之，若两只兔子看到的其他同色兔子数不同，那么这两只兔子颜色也不同。
+
+因此，将 answers 中值相同的元素分为一组，对于每一组，计算出兔子的最少数量，然后将所有组的计算结果累加，就是最终的答案。
+
+例如，现在有 13 只兔子回答 5。假设其中有一只红色的兔子，那么森林中必然有 6 只红兔子。再假设其中还有一只蓝色的兔子，同样的道理森林中必然有 6 只蓝兔子。为了最小化可能的兔子数量，我们假设这 12 只兔子都在这 13 只兔子中。那么还有一只额外的兔子回答 5，这只兔子只能是其他的颜色，这一颜色的兔子也有 6 只。因此这种情况下最少会有 18 只兔子。
+
+一般地，如果有 x 只兔子都回答 y，则至少有$floor(x/(y+1))$种不同的颜色，且每种颜色有 y+1 只兔子，因此兔子数至少为$floor(x/(y+1))*(y+1)$。先用一个哈希结构存储相同数字兔子的个数，再遍历该哈希表，依次计算每种颜色的数量。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<map>
+#include<iterator>
+
+using namespace std;
+
+class Solution {
+public:
+    int numRabbits(vector<int>& answers) {
+        map<int, int> count_map;
+        for(int i=0;i<answers.size();i++)
+        {
+            count_map[answers[i]]++;
+        }
+        int total_sum = 0;
+        for(map<int, int>::iterator it = count_map.begin();it!=count_map.end();it++)
+        {
+            int x = it->second;//多少只兔子说相同的数字
+            int y = it->first;//相同的数字
+            total_sum += floor(x,y+1) * (y+1);
+        }
+        return total_sum;
+    }
+private:
+    int floor(int x, int y)
+    {
+        //返回x/y向上取整的数
+        //加上y-1就可以实现向上取整
+        return (x+y-1)/y;
     }
 };
 ```

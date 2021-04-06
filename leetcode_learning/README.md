@@ -322,6 +322,49 @@ public:
 
 
 
+#### 26.删除有序数组中的重复项
+
+给你一个有序数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
+
+思路：
+
+数组完成排序后，我们可以放置两个指针 $i$ 和 $j$，其中 $i$ 是慢指针，而 $j$ 是快指针。只要 $nums[i] = nums[j]$，我们就增加 $j$ 以跳过重复项。当我们遇到 $nums[j] \neq nums[i]$ 时，跳过重复项的运行已经结束，因此我们必须把它（$nums[j]$）的值复制到 $nums[i + 1]$。然后递增 $i$，接着我们将再次重复相同的过程，直到 $j$ 到达数组的末尾为止。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int size = nums.size();
+        if(size==0)
+            return 0;
+        int i = 0;
+        for(int j=1;j<size;j++)
+        {
+            if(nums[j]!=nums[i])
+            {
+                i++;
+                nums[i] = nums[j];
+            }
+        }
+        return i+1;
+        
+        //如果要求返回前i个元素的数组，可以添加下面的代码
+        // for(int index = i+1;index<size;index++)
+        // {
+        //     nums.pop_back();
+        // }
+        // return nums;
+    }
+};
+```
+
+
+
 #### 31.下一个排列
 
 实现获取下一个排列的函数，算法需要将给定数字序列重新排列成字典序中下一个更大的排列。如果不存在下一个更大的排列，则将数字重新排列成最小的排列（即升序排列）。必须原地修改，只允许使用额外常数空间。以下是一些例子，输入位于左侧列，其相应输出位于右侧列。
@@ -1057,6 +1100,35 @@ public:
 
 
 
+#### 80.删除有序数组中的重复项II
+
+给你一个有序数组 nums ，请你 原地 删除重复出现的元素，使每个元素 最多出现两次 ，返回删除后数组的新长度。不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
+
+思路：和26题思路一致，不过判断条件改成nums[i-1]!=nums[j]。
+
+```c++
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int size = nums.size();
+        if(size<=2)
+            return size;
+        int i=1;
+        for(int j=2;j<size;j++)
+        {
+            if(nums[i-1]!=nums[j])
+            {
+                i++;
+                nums[i] = nums[j];
+            }
+        }
+        return i+1;
+    }
+};
+```
+
+
+
 #### 82.删除排序链表中的重复元素II
 
 存在一个按升序排列的链表，给你这个链表的头节点 head ，请你删除链表中所有存在数字重复情况的节点，只保留原始链表中 没有重复出现 的数字。返回同样按升序排列的结果链表。
@@ -1151,6 +1223,42 @@ public:
             }
         }
         return fake_head->next;
+    }
+};
+```
+
+
+
+#### 88.合并两个有序数组
+
+给你两个有序整数数组 nums1 和 nums2，请你将 nums2 合并到 nums1 中，使 nums1 成为一个有序数组。初始化 nums1 和 nums2 的元素数量分别为 m 和 n 。你可以假设 nums1 的空间大小等于 m + n，这样它就有足够的空间保存来自 nums2 的元素。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        if(n==0)
+            return;
+        int index = m+n-1;
+        int i = m-1;
+        int j = n-1;
+        while(i>=0&&j>=0)
+        {
+            if(nums1[i]>nums2[j])
+                nums1[index--] = nums1[i--];
+            else
+                nums1[index--] = nums2[j--];
+        }
+        //考虑nums2中是否还有多的元素
+        while(j>=0)
+        {
+            nums1[index--] = nums2[j--];
+        }
     }
 };
 ```

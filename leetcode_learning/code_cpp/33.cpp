@@ -1,19 +1,24 @@
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
 class Solution {
 public:
-    int search(int* A, int n, int target)
-    {
-        if(n==0)
+    int search(vector<int>& nums, int target) {
+        int size = nums.size();
+        if(size==0)
             return -1;
         int left = 0;
-        int right = n - 1;
+        int right = size - 1;
         int mid;
         while(left<right)
         {
-            int mid = (left + right) / 2;
+            int mid = (left+right)/2;
             //左边有序
-            if(A[left]<A[mid])
+            if(nums[mid]>nums[left])
             {
-                if(A[left]<=target&&target<=A[mid])
+                if(nums[left]<=target&&target<=nums[mid])
                     right = mid;
                 else
                     left = mid + 1;
@@ -21,13 +26,13 @@ public:
             //右边有序
             else
             {
-                if(A[mid+1]<=target&&target<=A[right])
+                if(nums[mid+1]<=target&&target<=nums[right])
                     left = mid + 1;
                 else
                     right = mid;
             }
         }
-        if(A[left]==target)
+        if(nums[left]==target)
             return left;
         else
             return -1;

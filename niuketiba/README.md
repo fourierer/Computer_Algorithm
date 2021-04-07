@@ -231,7 +231,83 @@ private:
 
 
 
-#### NC14.二叉树的之子形程序遍历。给定一个二叉树，返回该二叉树的之字形层序遍历，（第一层从左向右，下一层从右向左，一直这样交替）。
+#### NC13.二叉树的最大深度
+
+求给定二叉树的最大深度，最大深度是指树的根结点到最远叶子结点的最长路径上结点的数量。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode():val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x):val(x),left(nullptr).right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right):val(x),left(left),right(right){}
+};
+
+//递归
+class Solution {
+public:
+    /**
+     * 
+     * @param root TreeNode类 
+     * @return int整型
+     */
+    int maxDepth(TreeNode* root) {
+        // write code here
+        if(root==nullptr)
+            return 0;
+        return max(maxDepth(root->left), maxDepth(root->right)) + 1;
+    }
+};
+
+//非递归
+class Solution {
+public:
+    /**
+     * 
+     * @param root TreeNode类 
+     * @return int整型
+     */
+    int maxDepth(TreeNode* root) {
+        // write code here
+        if(root==nullptr)
+            return 0;
+        q.push(root);
+        int depth = 0;
+        while(!q.empty())
+        {
+            int size = q.size();
+            depth++;
+            for(int i=0;i<size;i++)
+            {
+                TreeNode* tmp = q.front();
+                q.pop();
+                if(tmp->left)
+                    q.push(tmp->left);
+                if(tmp->right)
+                    q.push(tmp->right);
+            }
+        }
+        return depth;
+    }
+private:
+    queue<TreeNode*> q;
+};
+```
+
+
+
+#### NC14.二叉树的之子形程序遍历。
+
+给定一个二叉树，返回该二叉树的之字形层序遍历，（第一层从左向右，下一层从右向左，一直这样交替）。
 
 ```c++
 #include<iostream>
@@ -744,7 +820,61 @@ public:
 
 
 
+#### NC38.螺旋矩阵
 
+给定一个m x n大小的矩阵（m行，n列），按螺旋的顺序返回矩阵中的所有元素。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix)
+    {
+        vector<int> result;
+        if(matrix.size()==0||matrix[0].size()==0)
+            return result;
+        int up = 0;
+        int down = matrix.size() - 1;
+        int left = 0;
+        int right = matrix[0].size() - 1;
+        while(1)
+        {
+            //遍历最上面一层
+            for(int col = left;col<=right;col++)
+                result.push_back(matrix[up][col]);
+            up++;
+            if(up>down)
+                break;
+            
+            //遍历最右边一层
+            for(int row=up;row<=down;row++)
+                result.push_back(matrix[row][right]);
+            right--;
+            if(left>right)
+                break;
+            
+            //遍历最下面一层
+            for(int col=right;col>=left;col--)
+                result.push_back(matrix[down][col]);
+            down--;
+            if(up>down)
+                break;
+            
+            //遍历最左边一层
+            for(int row=down;row>=up;row--)
+                result.push_back(matrix[row][left]);
+            left++;
+            if(left>right)
+                break;
+        }
+        return result;
+    }
+};
+```
 
 
 
@@ -858,6 +988,50 @@ private:
         Post(root->left);
         Post(root->right);
         post.push_back(root->val);
+    }
+};
+```
+
+
+
+#### 48.在转动过的有序数组中寻找目标值
+
+给出一个转动过的有序数组，你事先不知道该数组转动了多少(例如,0 1 2 4 5 6 7可能变为4 5 6 7 0 1 2).在数组中搜索给出的目标值，如果能在数组中找到，返回它的索引，否则返回-1。假设数组中不存在重复项。
+
+```c++
+class Solution {
+public:
+    int search(int* A, int n, int target)
+    {
+        if(n==0)
+            return -1;
+        int left = 0;
+        int right = n - 1;
+        int mid;
+        while(left<right)
+        {
+            int mid = (left + right) / 2;
+            //左边有序
+            if(A[left]<A[mid])
+            {
+                if(A[left]<=target&&target<=A[mid])
+                    right = mid;
+                else
+                    left = mid + 1;
+            }
+            //右边有序
+            else
+            {
+                if(A[mid+1]<=target&&target<=A[right])
+                    left = mid + 1;
+                else
+                    right = mid;
+            }
+        }
+        if(A[left]==target)
+            return left;
+        else
+            return -1;
     }
 };
 ```
@@ -1268,6 +1442,55 @@ public:
 
 
 
+#### NC59.矩阵的最小路径和
+
+给定一个 n * m 的矩阵 a，从左上角开始每次只能向右或者向下走，最后到达右下角的位置，路径上所有的数字累加起来就是路径和，输出所有的路径中最小的路径和。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+
+//dp[i][j]表示从[0,0]->[i,j]的最短路径和
+//dp[i][j]=min{dp[i-1][j],dp[i][j-1]} + matrix[i][j]
+class Solution {
+public:
+    /**
+     * 
+     * @param matrix int整型vector<vector<>> the matrix
+     * @return int整型
+     */
+    int minPathSum(vector<vector<int> >& matrix) {
+        // write code here
+        int m = matrix.size();
+        int n = matrix[0].size();
+        vector<vector<int>> dp(m, vector<int>(n,0));
+        int sum = 0;
+        //给第一行赋值
+        for(int i = 0;i<m;i++)
+        {
+            sum += matrix[i][0];
+            dp[i][0] = sum;
+        }
+        sum = 0;
+        //给第一列赋值
+        for(int j=0;j<n;j++)
+        {
+            sum += matrix[0][j];
+            dp[0][j] = sum;
+        }
+        for(int i=1;i<m;i++)
+            for(int j=1;j<n;j++)
+                dp[i][j] = min(dp[i][j-1],dp[i-1][j]) + matrix[i][j];
+        return dp[m-1][n-1];
+    }
+};
+```
+
+
+
 #### NC61.给出一个整数数组，请在数组中找出两个加起来等于目标值的数。
 
 给出的函数twoSum 需要返回这两个数字的下标（index1，index2），需要满足 index1 小于index2.。注意：下标是从1开始的。
@@ -1450,6 +1673,36 @@ public:
         head->next->next = head;
         head->next = NULL;
         return p;
+    }
+};
+```
+
+
+
+#### NC86.矩阵元素查找
+
+已知int一个有序矩阵**mat**，同时给定矩阵的大小**n**和**m**以及需要查找的元素**x**，且矩阵的行和列都是从小到大有序的。设计查找算法返回所查找元素的二元数组，代表该元素的行号和列号(均从零开始)。保证元素互异。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> findElement(vector<vector<int> > mat, int n, int m, int x) {
+        // write code here
+        for(int i=n-1,j=0;i>=0&&j<m;)
+        {
+            if(mat[i][j]==x)
+                return {i,j};
+            else if(mat[i][j]<x)
+                j++;
+            else
+                i--;
+        }
+        return {-1,-1};
     }
 };
 ```

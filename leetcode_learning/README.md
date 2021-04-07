@@ -434,6 +434,55 @@ public:
 
 
 
+#### 33.搜索旋转排序数组
+
+整数数组 nums 按升序排列，数组中的值 互不相同 。在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 旋转，使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的索引，否则返回 -1 。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int size = nums.size();
+        if(size==0)
+            return -1;
+        int left = 0;
+        int right = size - 1;
+        int mid;
+        while(left<right)
+        {
+            int mid = (left+right)/2;
+            //左边有序
+            if(nums[mid]>nums[left])
+            {
+                if(nums[left]<=target&&target<=nums[mid])
+                    right = mid;
+                else
+                    left = mid + 1;
+            }
+            //右边有序
+            else
+            {
+                if(nums[mid+1]<=target&&target<=nums[right])
+                    left = mid + 1;
+                else
+                    right = mid;
+            }
+        }
+        if(nums[left]==target)
+            return left;
+        else
+            return -1;
+    }
+};
+```
+
+
+
 #### 34.在排序数组中查找元素的第一个和最后一个位置
 
 给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。如果数组中不存在目标值 target，返回 [-1, -1]。
@@ -1123,6 +1172,103 @@ public:
             }
         }
         return i+1;
+    }
+};
+```
+
+
+
+#### 81.搜索旋转排序数组II
+
+假设按照升序排序的数组在预先未知的某个点上进行了旋转。( 例如，数组 [0,0,1,2,2,5,6] 可能变为 [2,5,6,0,0,1,2] )。编写一个函数来判断给定的目标值是否存在于数组中。若存在返回 true，否则返回 false。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//通过174/279
+class Solution {
+public:
+    bool search(vector<int>& nums, int target) {
+        int size = nums.size();
+        if(size==0)
+            return false;
+        int left = 0;
+        int right = size - 1;
+        int mid;
+        while(left<right)
+        {
+            mid = (left+right)/2;
+            //左边有序，包括等于的情况，这里判断有序的条件少了，比如[1,0,1,1,1]
+            if(nums[mid]>=nums[left])
+            {
+                if(nums[left]<=target&&target<=nums[mid])
+                    right = mid;
+                else
+                    left = mid + 1;
+            }
+            //右边有序
+            else
+            {
+                if(nums[mid+1]<=target&&target<=nums[right])
+                    left = mid + 1;
+                else
+                    right = mid;
+            }
+        }
+        if(nums[left]==target)
+            return true;
+        else
+            return false;
+    }
+};
+
+//在上面的基础之上添加判断左边有序的函数
+class Solution {
+public:
+    bool search(vector<int>& nums, int target) {
+        int size = nums.size();
+        if(size==0)
+            return false;
+        int left = 0;
+        int right = size - 1;
+        int mid;
+        while(left<right)
+        {
+            mid = (left+right)/2;
+            //左边有序
+            bool flag = IsOrder(nums, left, mid);
+            //cout<<flag;
+            if(flag)
+            {
+                if(nums[left]<=target&&target<=nums[mid])
+                    right = mid;
+                else
+                    left = mid + 1;
+            }
+            //右边有序
+            else
+            {
+                if(nums[mid+1]<=target&&target<=nums[right])
+                    left = mid + 1;
+                else
+                    right = mid;
+            }
+        }
+        if(nums[left]==target)
+            return true;
+        else
+            return false;
+    }
+private:
+    bool IsOrder(vector<int>& nums, int start, int end)
+    {
+        for(int i=start;i<end;i++)
+            if(nums[i+1]<nums[i])
+                return false;
+        return true;
     }
 };
 ```
@@ -2212,6 +2358,37 @@ private:
 ```
 
 
+
+#### 153.寻找旋转排序数组中的最小值
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        int size = nums.size();
+        if(size==1)
+            return nums[0];
+        int left = 0;
+        int right = size - 1;
+        int mid;
+        while(left<right)
+        {
+            int mid = (left+right)/2;
+            //寻找无序的部分，注意这里判断无序的条件不能写成if(nums[mid]>nums[left]),反例[4,5,6,7,0,1,2]
+            if(nums[mid]>nums[right])
+                left = mid + 1;
+            else
+                right = mid;
+        }
+        return nums[left];
+    }
+};
+```
 
 
 

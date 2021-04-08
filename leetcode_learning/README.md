@@ -110,6 +110,52 @@ int main()
 
 
 
+#### 5.最长回文子串
+
+给你一个字符串 `s`，找到 `s` 中最长的回文子串。
+
+```c++
+#include<iostream>
+#include<string>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int n = s.size();
+        vector<vector<int>> dp(n, vector<int>(n));
+        string ans = "";
+        //k = j-i
+        for(int k=0;k<n;k++)
+            for(int i=0;i+k<n;i++)
+            {
+                int j = i+k;
+                if(k==0)
+                    dp[i][j] = 1;
+                else if(k==1)
+                    dp[i][j] = (s[i]==s[j]);
+                else
+                    dp[i][j] = ((s[i]==s[j])&&dp[i+1][j-1]);
+                if(dp[i][j]&&k+1>ans.size())
+                    ans = s.substr(i,k+1);
+            }
+        return ans;
+    }
+};
+
+int main()
+{
+    string s = "abcdefg";
+    string sub_str = s.substr(0,3);
+    cout<<sub_str<<endl;
+    return 0;
+}
+```
+
+
+
 #### 7.整数反转
 
 给出一个 32 位(int型)的有符号整数，你需要将这个整数中每位上的数字进行反转。

@@ -1000,3 +1000,19 @@ vector<vector<int>> flag(m, vector<int>(n, 0)); //定义m*n全0二维数组
 string result(10, ' ');
 ```
 
+
+
+### 五、string相关操作
+
+#### 1.string求子串
+
+```c++
+int main()
+{
+    string s = "abcdefg";
+    string sub_s = s.substr(0,3); //从0开始数3个字符
+    cout<<sub_s<<endl; // "abc"
+    return 0;
+}
+```
+

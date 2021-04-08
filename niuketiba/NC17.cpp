@@ -34,7 +34,7 @@ private:
 };
 
 
-//动态规划
+//动态规划，dp[i][j]表示字符串索引从i到j是否是回文串
 //边界条件：(1)dp[i][i]=true;(2)dp[i][i+1]=(str[i]==str[i+1])?true:false;
 //状态转移方程：dp[i][j]=true if(dp[i+1][j-1]&&str[i]==str[j]),dp[i][j]=false if(str[i]!=str[j])
 class Solution {

@@ -2509,6 +2509,44 @@ public:
 
 
 
+#### 179.最大数
+
+给定一组非负整数 `nums`，重新排列每个数的顺序（每个数不可拆分）使之组成一个最大的整数。**注意：**输出结果可能非常大，所以你需要返回一个字符串而不是整数。
+
+```c++
+#include<iostream>
+#include<string>
+#include<vector>
+
+using namespace std;
+
+bool compare(int& x, int& y)
+{
+    return to_string(x)+to_string(y)>to_string(y)+to_string(x);
+}
+
+class Solution {
+public:
+    string largestNumber(vector<int>& nums) {
+        sort(nums.begin(), nums.end(), compare);
+        string result = "";
+        int flag = 0;
+        for(int i=0;i<nums.size();i++)
+        {
+            //下面两个if语句是为了防止出现[0,0]或者[1,0,0]等情况
+            if(nums[i]!=0)
+                flag = 1;
+            if(flag==0&&i!=nums.size()-1)
+                continue;
+            result += to_string(nums[i]);
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### 188.买卖股票的最佳时机IV
 
 ```c++
@@ -2761,6 +2799,39 @@ private:
 
 
 
+#### 198.打家劫舍
+
+你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        if(nums.size()==0)
+            return 0;
+        if(nums.size()==1)
+            return nums[0];
+        if(nums.size()==2)
+            return max(nums[0], nums[1]);
+        vector<int> dp(nums.size());
+        dp[0] = max(0,nums[0]);
+        dp[1] = max(dp[0], nums[1]);
+        for(int i=2;i<nums.size();i++)
+        {
+            dp[i] = max(dp[i-1], dp[i-2]+nums[i]);
+        }
+        return dp[nums.size()-1];
+    }
+};
+```
+
+
+
 #### 200.岛屿问题
 
 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。此外，你可以假设该网格的四条边均被水包围。
@@ -2959,6 +3030,58 @@ public:
 
 
 
+#### 213.打家劫舍II
+
+你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。给定一个代表每个房屋存放金额的非负整数数组，计算你 在不触动警报装置的情况下 ，能够偷窃到的最高金额。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int k = nums.size();
+        if (k == 0)
+        {
+            return 0;
+        }
+        if (k==1)
+        {
+            return nums[0];
+        }
+        if(k==2)
+            return max(nums[0], nums[1]);
+        vector<int> v1(nums.begin(),nums.begin() + k-1);
+        vector<int> v2(nums.begin()+1,nums.begin() + k);
+        int vv1 = robp(v1);
+        int vv2 = robp(v2);
+        return max(vv1,vv2);
+    }
+    int robp(vector<int>& num) {
+        int k = num.size();
+        if(k==0)
+        {
+            return 0;
+        }
+        int curmax = 0;
+        int premax = 0;
+        //动态规划求解
+        for(int i = 0;i<k;i++)
+        {
+            int temp = curmax;
+            curmax = max(premax+num[i],curmax);
+            premax = temp;            
+        }
+        return curmax;
+    }
+};
+```
+
+
+
 #### 222.完全二叉树的节点个数
 
 给出一个**完全二叉树**，求出该树的节点个数。完全二叉树的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。若最底层为第 $h$ 层，则该层包含 $1-2^h$ 个节点。
@@ -3123,7 +3246,107 @@ public:
 
 
 
+#### 263.丑数
 
+给你一个整数 n ，请你判断 n 是否为 丑数 。如果是，返回 true ；否则，返回 false 。丑数 就是只包含质因数 2、3 和/或 5 的正整数。
+
+```c++
+//根据丑数的定义，丑数n一定可以写成因式分解的形式n=2^a*3^b*5^c
+//只需要不断除以因子2,3,5即可
+class Solution {
+public:
+    bool isUgly(int n) {
+        if(n<=0)
+            return false;
+        if(n<=6&&n>0)
+            return true;
+        while(n%5==0)
+            n /= 5;
+        while(n%3==0)
+            n /= 3;
+        while(n%2==0)
+            n /= 2;
+        if(n==1)
+            return true;
+        return false;
+    }
+};
+```
+
+
+
+#### 264.丑数II
+
+给你一个整数 `n` ，请你找出并返回第 `n` 个 **丑数** 。**丑数** 就是只包含质因数 `2`、`3` 和/或 `5` 的正整数。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//超时
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        int index = 1;
+        int count = 0;
+        while(count<n)
+        {
+            if(isUgly(index))
+            {
+                count++;
+                if(count==n)
+                    return index;
+                index++;
+            }
+        }
+        return 0;
+    }
+private:
+    bool isUgly(int n) {
+        if(n<=0)
+            return false;
+        if(n<=6&&n>0)
+            return true;
+        while(n%5==0)
+            n /= 5;
+        while(n%3==0)
+            n /= 3;
+        while(n%2==0)
+            n /= 2;
+        if(n==1)
+            return true;
+        return false;
+    }
+};
+
+
+//动态规划：dp[i]=min{dp[p2]*2,dp[p3]*3,dp[p5]*5}
+class solution{
+public:
+    int nthUglyNumber(int n)
+    {
+        vector<int> dp(n+1);
+        dp[1] = 1;
+        int p2 = 1, p3 = 1, p5 = 1;
+        for(int i=2;i<=n;i++)
+        {
+            int num2 = dp[p2]*2;
+            int num3 = dp[p3]*3;
+            int num5 = dp[p5]*5;
+            dp[i] = min(min(num2,num3),num5);
+            if(dp[i]==num2)
+                p2++;
+            if(dp[i]==num3)
+                p3++;
+            if(dp[i]==num5)
+                p5++;
+        }
+        return dp[n];
+    }
+};
+```
 
 
 
@@ -3523,6 +3746,49 @@ public:
 ```
 
 
+
+#### 337.打家劫舍III
+
+
+在上次打劫完一条街道之后和一圈房屋后，小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为“根”。 除了“根”之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果两个直接相连的房子在同一天晚上被打劫，房屋将自动报警。计算在不触动警报的情况下，小偷一晚能够盗取的最高金额。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+ struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
+
+//用一个数组分别记录偷根节点和不偷根节点时的最大值
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        int * res = doRob(root);
+        return max(res[0],res[1]);
+    }
+
+    int * doRob(TreeNode * root)
+    {
+        int * res = new int[2];
+        res[0] = 0;
+        res[1] = 0;
+        if(root == NULL)
+            return res;
+        int* left = doRob(root->left);
+        int * right = doRob(root->right);
+        //不偷根节点，最大值为两个子树的最大值之和
+        res[0] = max(left[0],left[1])+max(right[0],right[1]);
+        //偷根节点，最大值为两个子树不包含根节点的最大值加上根节点的值
+        res[1] = left[0] + right[0] + root->val;
+        return res;
+    }
+};
+```
 
 
 

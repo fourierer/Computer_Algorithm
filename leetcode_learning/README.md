@@ -4431,6 +4431,51 @@ private:
 
 
 
+#### 781.二叉搜索树节点最小距离
+
+给你一个二叉搜索树的根节点 `root` ，返回 **树中任意两不同节点值之间的最小差值** 。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+struct TreeNode{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode():val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x):val(x),left(nullptr),right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right):val(x),left(left),right(right){}
+};
+
+class Solution {
+public:
+    int minDiffInBST(TreeNode* root) {
+        MidOrder(root);
+        int Min = INT_MAX;
+        for(int i=1;i<v.size();i++)
+        {
+            Min = min(Min,abs(v[i]-v[i-1]));
+        }
+        return Min;
+    }
+private:
+    vector<int> v;
+    void MidOrder(TreeNode* root)
+    {
+        if(!root)
+            return;
+        MidOrder(root->left);
+        v.push_back(root->val);
+        MidOrder(root->right);
+    }
+};
+```
+
+
+
 #### 861.翻转矩阵后的得分
 
 有一个二维矩阵 A 其中每个元素的值为 0 或 1 。移动是指选择任一行或列，并转换该行或列中的每一个值：将所有 0 都更改为 1，将所有 1 都更改为 0。在做出任意次数的移动后，将该矩阵的每一行都按照二进制数来解释，矩阵的得分就是这些数字的总和。返回尽可能高的分数。

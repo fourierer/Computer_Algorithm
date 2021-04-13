@@ -2273,6 +2273,41 @@ private:
 
 
 
+#### NC129.阶乘末尾0的数量
+
+给定一个非负整数 $N$，返回 $N!$ 结果的末尾为 $0$ 的数量。$N!$ 是指自然数 $N$ 的阶乘,即:$N!=1*2*3…(N-2)*(N-1)*N$。
+
+```c++
+//观察阶乘结果可知，n!末尾0的数量就是看n!中可以拆出多少个5，拆出的2的个数肯定比5多，所以不用考虑2
+//5中可以拆出1个5,25可以拆出两个5,125中可以拆出3个5，可以类推出前125个数阶乘中5的个数
+//5->1,10->2,15->3,20->4,25->6
+//30->7,35->8,40->9,45->10,50->12
+//55->13,60->14,65->15,70->16,75->18
+//80->19,85->20,90->21,95->22,100->24
+//105->25,110->26,115->27,120->28,125->31,...以此类推
+//可以发现有代码中的规律
+class Solution {
+public:
+    /**
+     * the number of 0
+     * @param n long长整型 the number
+     * @return long长整型
+     */
+    long long thenumberof0(long long n) {
+        // write code here
+        long long count = 0;
+        while(n>0)
+        {
+            n /= 5;
+            count += n;
+        }
+        return count;
+    }
+};
+```
+
+
+
 #### NC134.假定你知道某只股票每一天价格的变动。你最多可以同时持有一只股票。但你可以无限次的交易（买进和卖出均无手续费）。请设计一个函数，计算你所能获得的最大收益。
 
 ```c++
@@ -2533,6 +2568,48 @@ public:
             dp[i] = max(dp[i-1], dp[i-2]+array[i]);
         }
         return dp[n-1];
+    }
+};
+```
+
+
+
+#### NC145.01背包
+
+已知一个背包最多能容纳物体的体积为$V$，现有$n$个物品第$i$个物品的体积为$v_i$第$i$个物品的重量为$w_i$。求当前背包最多能装多大重量的物品。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 计算01背包问题的结果
+     * @param V int整型 背包的体积
+     * @param n int整型 物品的个数
+     * @param vw int整型vector<vector<>> 第一维度为n,第二维度为2的二维数组,vw[i][0],vw[i][1]分别描述i+1个物品的vi,wi
+     * @return int整型
+     */
+    int knapsack(int V, int n, vector<vector<int> >& vw) {
+        // write code here
+        int k = vw.size();//k个物品
+        //dp[i][v]表示包空v时，前i个物品的最大重量
+        //dp[i][v]=max{dp[i-1][v], dp[i-1][v-vi] + wi}
+        vector<vector<int>> dp(k+1, vector<int>(V+1,0));
+        for(int i=1;i<=k;i++)
+            for(int v=1;v<=V;v++)
+            {
+                //如果当前空的空间小于当前物品的重量，那么不放当前的物品
+                if(v-vw[i-1][0]<0)
+                    dp[i][v] = dp[i-1][v];
+                else
+                    dp[i][v] = max(dp[i-1][v], dp[i-1][v-vw[i-1][0]] + vw[i-1][1]);
+            }
+        return dp[k][V];
     }
 };
 ```

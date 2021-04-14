@@ -3030,6 +3030,264 @@ public:
 
 
 
+#### 208.实现Trie(前缀树)
+
+**[
+Trie](https://baike.baidu.com/item/字典树/9825209?fr=aladdin)**（发音类似 "try"）或者说 **前缀树** 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
+
+请你实现 Trie 类：
+
+- `Trie()` 初始化前缀树对象。
+- `void insert(String word)` 向前缀树中插入字符串 `word` 。
+- `boolean search(String word)` 如果字符串 `word` 在前缀树中，返回 `true`（即，在检索之前已经插入）；否则，返回 `false` 。
+- `boolean startsWith(String prefix)` 如果之前已经插入的字符串 `word` 的前缀之一为 `prefix` ，返回 `true` ；否则，返回 `false` 。
+
+```
+输入
+["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
+输出
+[null, null, true, false, true, null, true]
+
+解释
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");   // 返回 True
+trie.search("app");     // 返回 False
+trie.startsWith("app"); // 返回 True
+trie.insert("app");
+trie.search("app");     // 返回 True
+```
+
+```c++
+#include<iostream>
+#include<vector>
+#include<string>
+
+using namespace std;
+
+//数组解法
+class Trie {
+public:
+    /** Initialize your data structure here. */
+    Trie() {
+
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        v.push_back(word);
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        for(int i=0;i<v.size();i++)
+            if(v[i]==word)
+                return true;
+        return false;
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        for(int i=0;i<v.size();i++)
+            if(v[i].substr(0, prefix.size())==prefix)
+                return true;
+        return false;
+    }
+
+private:
+    vector<string> v;
+};
+
+
+
+//构建前缀树
+class Trie {
+private:
+    vector<Trie*> children;
+    bool isEnd;
+
+    Trie* searchPrefix(string prefix) {
+        Trie* node = this;
+        for (char ch : prefix) {
+            ch -= 'a';
+            if (node->children[ch] == nullptr) {
+                return nullptr;
+            }
+            node = node->children[ch];
+        }
+        return node;
+    }
+
+public:
+    Trie() : children(26), isEnd(false) {}
+
+    void insert(string word) {
+        Trie* node = this;
+        for (char ch : word) {
+            ch -= 'a';
+            if (node->children[ch] == nullptr) {
+                node->children[ch] = new Trie();
+            }
+            node = node->children[ch];
+        }
+        node->isEnd = true;
+    }
+
+    bool search(string word) {
+        Trie* node = this->searchPrefix(word);
+        return node != nullptr && node->isEnd;
+    }
+
+    bool startsWith(string prefix) {
+        return this->searchPrefix(prefix) != nullptr;
+    }
+};
+```
+
+关于前缀树的介绍（参考：https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/trie-tree-de-shi-xian-gua-he-chu-xue-zhe-by-huwt/）
+
+前缀树是多叉树，即每个节点的分支数量可以为多个。
+
+一般的多叉树定义：
+
+```c++
+struct TreeNode{
+    VALUETYPE value;//节点值
+    TreeNode* children[NUM];//指向孩子节点
+};
+```
+
+Trie的定义：
+
+```c++
+struct TrieNode{
+    bool isEnd;//该节点是否是一个串的结束
+    TrieNode* next[26];//字母映射表
+};
+```
+
+包含单词"sea,sells,she"的Trie如下：
+
+![208_1](G:\Documents\Computer_Algorithm\img\leetcode\208_1.png)
+
+![208_2](G:\Documents\Computer_Algorithm\img\leetcode\208_2.png)
+
+定义类Trie：
+
+```c++
+class Trie {
+private:
+    bool isEnd;
+    Trie* next[26];
+public:
+    //方法将在下文实现...
+};
+```
+
+插入一个单词word:
+
+这个操作和构建链表很像。首先从根结点的子结点开始与 word 第一个字符进行匹配，一直匹配到前缀链上没有对应的字符，这时开始不断开辟新的结点，直到插入完 word 的最后一个字符，同时还要将最后一个结点isEnd = true;，表示它是一个单词的末尾。
+
+```c++
+void insert(string word) {
+    Trie* node = this;
+    for (char c : word) {
+        if (node->next[c-'a'] == NULL) {
+            node->next[c-'a'] = new Trie();
+        }
+        node = node->next[c-'a'];
+    }
+    node->isEnd = true;
+}
+```
+
+查找单词word：
+
+从根结点的子结点开始，一直向下匹配即可，如果出现结点值为空就返回 `false`，如果匹配到了最后一个字符，那我们只需判断 `node->isEnd`即可。
+
+```c++
+bool search(string word) {
+    Trie* node = this;
+    for (char c : word) {
+        node = node->next[c - 'a'];
+        if (node == NULL) {
+            return false;
+        }
+    }
+    return node->isEnd;
+}
+```
+
+前缀匹配：
+
+和 search 操作类似，只是不需要判断最后一个字符结点的`isEnd`，因为既然能匹配到最后一个字符，那后面一定有单词是以它为前缀的。
+
+```c++
+bool startsWith(string prefix) {
+    Trie* node = this;
+    for (char c : prefix) {
+        node = node->next[c-'a'];
+        if (node == NULL) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+完整代码：
+
+```c++
+class Trie {
+private:
+    bool isEnd;
+    Trie* next[26];
+public:
+    Trie() {
+        isEnd = false;
+        memset(next, 0, sizeof(next));
+    }
+    
+    void insert(string word) {
+        Trie* node = this;
+        for (char c : word) {
+            if (node->next[c-'a'] == NULL) {
+                node->next[c-'a'] = new Trie();
+            }
+            node = node->next[c-'a'];
+        }
+        node->isEnd = true;
+    }
+    
+    bool search(string word) {
+        Trie* node = this;
+        for (char c : word) {
+            node = node->next[c - 'a'];
+            if (node == NULL) {
+                return false;
+            }
+        }
+        return node->isEnd;
+    }
+    
+    bool startsWith(string prefix) {
+        Trie* node = this;
+        for (char c : prefix) {
+            node = node->next[c-'a'];
+            if (node == NULL) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+```
+
+
+
+
+
 #### 213.打家劫舍II
 
 你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。给定一个代表每个房屋存放金额的非负整数数组，计算你 在不触动警报装置的情况下 ，能够偷窃到的最高金额。

@@ -23,23 +23,21 @@ public:
         int vv2 = robp(v2);
         return max(vv1,vv2);
     }
-    int robp(vector<int>& num) {
-        int k = num.size();
-        if(k==0)
-        {
+private:
+    int robp(vector<int>& nums) {
+        if(nums.size()==0)
             return 0;
-        }
-        int curmax = 0;
-        int premax = 0;
-        //动态规划求解
-        for(int i = 0;i<k;i++)
+        if(nums.size()==1)
+            return nums[0];
+        if(nums.size()==2)
+            return max(nums[0], nums[1]);
+        vector<int> dp(nums.size());
+        dp[0] = max(0,nums[0]);
+        dp[1] = max(dp[0], nums[1]);
+        for(int i=2;i<nums.size();i++)
         {
-            int temp = curmax;
-            curmax = max(premax+num[i],curmax);
-            premax = temp;            
+            dp[i] = max(dp[i-1], dp[i-2]+nums[i]);
         }
-
-        return curmax;
+        return dp[nums.size()-1];
     }
-    
 };

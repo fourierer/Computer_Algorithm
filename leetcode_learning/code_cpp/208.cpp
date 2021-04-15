@@ -59,7 +59,6 @@ private:
 
 public:
     Trie() : children(26), isEnd(false) {}
-
     void insert(string word) {
         Trie* node = this;
         for (char ch : word) {

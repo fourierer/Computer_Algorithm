@@ -1586,6 +1586,42 @@ private:
 
 
 
+#### NC57.反转数字
+
+将给出的32位整数x翻转。
+例1:x=123，返回321
+例2:x=-123，返回-321
+
+你有注意到翻转后的整数可能溢出吗？因为给出的是32位整数，则其数值范围为$[−2^{31}, 2^{31} − 1]$。翻转可能会导致溢出，如果反转后的结果会溢出就返回 0。
+
+```c++
+class Solution {
+public:
+    /**
+     * 
+     * @param x int整型 
+     * @return int整型
+     */
+    int reverse(int x) {
+        // write code here
+        long tmp = 0;
+        //用一个long型的数表示翻转后的x，可能会溢出int
+        long sum = 0;
+        while(x!=0)
+        {
+            tmp = x%10;
+            sum = sum*10 + tmp;
+            x /=10;
+        }
+        if(sum>INT_MAX||sum<INT_MIN)
+            return 0;
+        return sum;
+    }
+};
+```
+
+
+
 #### NC59.矩阵的最小路径和
 
 给定一个 n * m 的矩阵 a，从左上角开始每次只能向右或者向下走，最后到达右下角的位置，路径上所有的数字累加起来就是路径和，输出所有的路径中最小的路径和。
@@ -1629,6 +1665,107 @@ public:
             for(int j=1;j<n;j++)
                 dp[i][j] = min(dp[i][j-1],dp[i-1][j]) + matrix[i][j];
         return dp[m-1][n-1];
+    }
+};
+```
+
+
+
+#### NC60.判断一棵树是否为搜索二叉树和完全二叉树
+
+给定一棵二叉树，已经其中没有重复值的节点，请判断该二叉树是否为搜索二叉树和完全二叉树。
+
+完全二叉树 的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。若最底层为第 h 层，则该层包含 $1-2^h$ 个节点。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+struct TreeNode{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode():val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x):val(x),left(nullptr),right(nullptr){}
+    TreeNode()
+};
+
+class Solution {
+public:
+    /**
+     * 
+     * @param root TreeNode类 the root
+     * @return bool布尔型vector
+     */
+    vector<bool> judgeIt(TreeNode* root) {
+        // write code here
+        if(!root)
+            return {true,true};
+        vector<bool> result;
+        result.push_back(IsSearch(root));
+        result.push_back(IsComplete(root));
+        return result;
+    }
+private:
+    vector<int> v;
+    void MidOrder(TreeNode* root)
+    {
+        if(root==nullptr)
+            return;
+        MidOrder(root->left);
+        v.push_back(root->val);
+        MidOrder(root->right);
+    }
+    bool IsSearch(TreeNode* root)
+    {
+        MidOrder(root);
+        for(int i=0;i<v.size()-1;i++)
+        {
+            if(v[i]>v[i+1])
+                return false;
+        }
+        return true;
+    }
+
+    //计算“如果是完全二叉树”的节点个数
+    int count_node(TreeNode* root)
+    {
+        int count = 0;
+        vector<int> node;
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty())
+        {
+            TreeNode* tmp = q.front();
+            q.pop();
+            node.push_back(tmp->val);
+            //遇到空树，将队列中的树节点和当前已遍历过的节点个数相加之后之后再结束遍历
+            if(tmp->left)
+                q.push(tmp->left);
+            else
+            {
+                count = node.size()+q.size();
+                break;
+            }
+            if(tmp->right)
+                q.push(tmp->right);
+            else
+            {
+                count = node.size()+q.size();
+                break;
+            }
+        }
+        return count;
+    }
+    bool IsComplete(TreeNode* root)
+    {
+        int count = count_node(root);
+        if(v.size()==count)
+            return true;
+        return false;
     }
 };
 ```

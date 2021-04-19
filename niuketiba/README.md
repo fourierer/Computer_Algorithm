@@ -716,6 +716,47 @@ public:
 
 
 
+#### NC24.删除有序链表中重复出现的元素
+
+给出一个升序排序的链表，删除链表中的所有重复出现的元素，只保留原链表中只出现一次的元素。
+例如：
+给出的链表为1→2→3→3→4→4→5, 返回1→2→5.
+给出的链表为1→1→1→2→3, 返回2→3.
+
+```c++
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(head==nullptr)
+            return head;
+        ListNode* fake_head = new ListNode(0);//创建一个指向head的伪节点
+        fake_head->next = head;
+        ListNode* pre = fake_head;
+        ListNode* cur = head;
+        while(cur&&cur->next)
+        {
+            if(cur->val==cur->next->val)
+            {
+                //cur = cur->next;
+                while(cur->next&&cur->val==cur->next->val)//先确保cur->next不为空
+                    cur = cur->next;
+                //此时cur->val!=cur->next->val，但是要删除所有重复的元素
+                cur = cur->next;//把重复的最后一个也删掉
+                pre->next = cur;
+            }
+            else
+            {
+                pre = cur;
+                cur = cur->next;
+            }
+        }
+        return fake_head->next;
+    }
+};
+```
+
+
+
 #### NC25.删除给出链表中的重复元素（链表中元素从小到大有序），使链表中的所有元素都只出现一次。
 
 ```c++

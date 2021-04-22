@@ -2061,6 +2061,84 @@ public:
 
 
 
+#### NC83.子数组的最大乘积
+
+给定一个double类型的数组arr，其中的元素可正可负可0，返回子数组连续累乘的最大乘积。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//动态规划：
+//dp[i]表示以arr[i]为结尾的连乘结果最大值
+//dp[i] = max{dp[i-1]*arr[i], arr[i]}
+//该思路和求连续子数组的和最大是一样的，通过73/100组用例，因为乘法会因为符号的差异导致漏算，比如[-3,4,-5]，
+//dp结果为[-3,4,-5]，但实际上-3和-5的符号可以相互抵消，使得乘积结果更大，所以需要考虑数值的正负。
+class Solution {
+public:
+    double maxProduct(vector<double> arr) {
+        int size = arr.size();
+        vector<double> dp(size);
+        dp[0] = arr[0];
+        double M = dp[0];
+        for(int i=1;i<size;i++)
+        {
+            dp[i] = max(dp[i-1]*arr[i], arr[i]);
+            M = max(dp[i], M);
+        }
+        // for(int i=0;i<size;i++)
+        // {
+        //     cout<<dp[i]<<endl;
+        // }
+        return M;
+    }
+};
+
+//沿着乘法的特性看，如果a[i]为负数，那么考虑dp[i]时，dp[i-1]越大dp[i]结果越小，dp[i-1]越小dp[i]结果越大。
+//所以只需要同时保存最大值和最小值，就可以写出状态转移方程了。
+//a[i] > 0时：
+//dp_max[i] = max(a[i], a[i]*dp_max[i-1])
+//dp_min[i] = min(a[i], a[i]*dp_minv[i-1])
+//a[i] < 0时：
+//dp_max[i] = max(a[i], a[i]*dp_min[i-1])
+//dp_min[i] = min(a[i], a[i]*dp_max[i-1])
+//a[i]=0时，max和min肯定是0。
+class Solution {
+public:
+    double maxProduct(vector<double> arr) {
+        int size = arr.size();
+        vector<double> dp_max(size);
+        vector<double> dp_min(size);
+        dp_max[0] = arr[0];
+        dp_min[0] = arr[0];
+        double M = dp_max[0];
+        for(int i=1;i<size;i++)
+        {
+            if(arr[i]>0)
+            {
+                dp_max[i] = max(dp_max[i-1]*arr[i], arr[i]);
+                dp_min[i] = min(dp_min[i-1]*arr[i], arr[i]);
+            }
+            else
+            {
+                dp_max[i] = max(dp_min[i-1]*arr[i], arr[i]);
+                dp_min[i] = min(dp_max[i-1]*arr[i], arr[i]);
+            }
+            M = max(dp_max[i], M);
+        }
+        // for(int i=0;i<size;i++)
+        // {
+        //     cout<<dp[i]<<endl;
+        // }
+        return M;
+    }
+};
+```
+
+
+
 #### NC86.矩阵元素查找
 
 已知int一个有序矩阵**mat**，同时给定矩阵的大小**n**和**m**以及需要查找的元素**x**，且矩阵的行和列都是从小到大有序的。设计查找算法返回所查找元素的二元数组，代表该元素的行号和列号(均从零开始)。保证元素互异。
@@ -2285,6 +2363,59 @@ public:
                 return a[i] + 1;
         }
         return a[aLen-1] + 1;
+    }
+};
+```
+
+
+
+#### NC102.最近公共祖先
+
+给定一棵二叉树以及这棵树上的两个节点 o1 和 o2，请找到 o1 和 o2 的最近公共祖先节点。 
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+struct TreeNode{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode():val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x):val(x),left(nullptr),right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right):val(x),left(left),right(right){}
+};
+
+class Solution {
+public:
+    /**
+     * 
+     * @param root TreeNode类 
+     * @param o1 int整型 
+     * @param o2 int整型 
+     * @return int整型
+     */
+    int lowestCommonAncestor(TreeNode* root, int o1, int o2) {
+        // write code here
+        return dfs(root, o1, o2)->val;
+    }
+private:
+    TreeNode* dfs(TreeNode* root, int o1, int o2)
+    {
+        //如果当前节点为空，或者节点值等于o1或者o2，则直接返回该节点
+        if(root==nullptr||root->val==o1||root->val==o2)
+            return root;
+        //遍历左子树
+        TreeNode* left = dfs(root->left, o1, o2);
+        //遍历右子树
+        TreeNode* right = dfs(root->right, o1, o2);
+        //如果左右子树不为空，说明左右子树(或者左右子树下面的子节点)分别包含o1或者o2
+        if(left!=nullptr&&right!=nullptr)
+            return root;
+        //如果左右子树均为空，则返回空
+        //如果左右子树有一个不空，则返回不空的那个，不空的(或者其下面的子节点)一定包含o1或者o2，空的(及其下面的子节点)一定不包含o1或者o2
+        return left!=nullptr?left:right;
     }
 };
 ```

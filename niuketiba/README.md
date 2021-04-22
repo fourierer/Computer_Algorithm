@@ -2989,3 +2989,42 @@ public:
 };
 ```
 
+
+
+#### NC151.最大公约数
+
+我们用辗转相除法（又称欧几里得算法）来计算两个数的最大公约数 (Greatest Common Divisor)所以下文用gcd(a,b)表示a和b的最大公约数。
+
+先举一个例子：
+假如需要求 434 和 652 的最大公约数,用欧几里得算法，是这样进行的：
+434 / 652 = 0 (余 434)
+652 / 434 = 1(余218)
+434 / 218 = 216(余2)
+216 / 2 = 108 (余0)
+以除数和余数反复做除法运算，当余数为 0 时，取当前算式除数为最大公约数，所以就得出了 434 和 652 的最大公约数 2。
+
+**算法的核心其实是** ：![img](https://www.nowcoder.com/equation?tex=gcd(a%2Cb)%20%3D%20gcd(b%2Ca%20%5Cbmod%20b)&preview=true)
+
+然后我们考虑，对于两个数 ![img](https://www.nowcoder.com/equation?tex=a%E3%80%81b&preview=true) ， 如果![img](https://www.nowcoder.com/equation?tex=a%5C%25b%3D%3D0&preview=true)的话,那这两个数的最大公约数是 ![img](https://www.nowcoder.com/equation?tex=b&preview=true)
+
+```c++
+class Solution {
+public:
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * 求出a、b的最大公约数。
+     * @param a int 
+     * @param b int 
+     * @return int
+     */
+    int gcd(int a, int b) {
+        // write code here
+        if(a%b==0)
+            return b;
+        else
+            return gcd(b, a%b);
+    }
+};
+```
+

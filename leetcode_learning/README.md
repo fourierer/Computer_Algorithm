@@ -4358,6 +4358,51 @@ int main()
 
 
 
+#### 363.矩形区域不超过K的最大值和
+
+给你一个 m x n 的矩阵 matrix 和一个整数 k ，找出并返回矩阵内部矩形区域的不超过 k 的最大数值和。题目数据保证总会存在一个数值和不超过 k 的矩形区域。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+
+//超出时间限制，通过26/27个测试用例，官方解法看不太懂
+class Solution {
+public:
+    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+        int result = INT_MIN;
+        int m = matrix.size();
+        int n = matrix[0].size();
+        //枚举上边界
+        for(int i=0;i<m;i++)
+        {
+            //上下界对应的列和数组
+            vector<int> sum(n);
+            //枚举下边界
+            for(int j=i;j<m;j++)
+            {
+                for(int c=0;c<n;c++)
+                    sum[c] += matrix[j][c];//更新每列的元素和
+                //计算当前上下边界对应的列和数组中满足条件的result
+                for(int start = 0;start<n;start++)
+                    for(int end = start;end<n;end++)
+                    {
+                        int S = accumulate(sum.begin()+start, sum.begin()+end+1, 0);//从索引start开始一直加到end，必须要加1才会包含end
+                        if(S<=k)
+                            result = max(S,result);
+                    }
+            }
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### 402. 移掉K位数字
 
 给定一个以字符串表示的非负整数 *num*，移除这个数中的 *k* 位数字，使得剩下的数字最小。

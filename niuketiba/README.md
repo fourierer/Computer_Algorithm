@@ -159,6 +159,39 @@ public:
 
 
 
+#### NC5.二叉树根节点到叶子节点的所有路径
+
+给定一个仅包含数字0−9 的二叉树，每一条从根节点到叶子节点的路径都可以用一个数字表示。例如根节点到叶子节点的一条路径是1→2→3,那么这条路径就用123 来代替。找出根节点到叶子节点的所有路径表示的数字之和，例如：
+
+![img](https://uploadfiles.nowcoder.com/images/20200807/999991351_1596786228797_BC85E8592A231E74E5338EBA1CFB2D20)
+
+这颗二叉树一共有两条路径，
+根节点到叶子节点的路径 1→2 用数字12 代替
+根节点到叶子节点的路径 1→3 用数字13 代替
+所以答案为12+13=25
+
+```c++
+class Solution {
+public:
+    int sumNumbers(TreeNode* root)
+    {
+        return dfs(root,0);
+    }
+private:
+    int dfs(TreeNode* root, int presum)
+    {
+        if(root==NULL)
+            return 0;
+        int sum = presum*10 + root->val;
+        if(root->right==NULL&&root->left==NULL)
+            return sum;
+        return dfs(root->left, sum) + dfs(root->right, sum);
+    }
+};
+```
+
+
+
 #### NC7.假设你有一个数组，其中第$i$个元素是股票在第$i$天的价格。
 
 只有一次买入和卖出的机会。（只有买入了股票以后才能卖出）。请你设计一个算法来计算可以获得的最大收益。
@@ -3155,6 +3188,43 @@ public:
             return b;
         else
             return gcd(b, a%b);
+    }
+};
+```
+
+
+
+#### NC156.数组中只出现一次的数（其他数出现k次）
+
+给定一个整型数组 arr 和一个整数 k(k>1)。已知 arr 中只有 1 个数出现一次，其他的数都出现 k 次。请返回只出现了 1 次的数。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<map>
+#include<iterator>
+
+using namespace std;
+
+class Solution {
+public:
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * 
+     * @param arr intvector 
+     * @param k int 
+     * @return int
+     */
+    int foundOnceNumber(vector<int>& arr, int k) {
+        // write code here
+        map<int, int> arr_count;
+        for(int i=0;i<arr.size();i++)
+            arr_count[arr[i]]++;
+        for(map<int, int>::iterator it = arr_count.begin();it!=arr_count.end();it++)
+            if(it->second==1)
+                return it->first;
+        return 0;
     }
 };
 ```

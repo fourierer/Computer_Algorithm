@@ -4049,6 +4049,40 @@ public:
 
 
 
+#### 322.兑换零钱
+
+给定不同面额的硬币 coins 和一个总金额 amount。编写一个函数来计算可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。你可以认为每种硬币的数量是无限的。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//思路：dp[i]表示金额为i所需要的最少硬币数
+//dp[i] = min{dp[i],dp[i-coins[i]]+1},i=0,1,2,...,n-1
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> dp(amount+1, INT_MAX-1);//后续有dp[i-coins[j]]+1操作，INT_MAX+1不能用int表示，会报错
+        dp[0] = 0;
+        for(int i=1;i<=amount;i++)
+        {
+            for(int j=0;j<coins.size();j++)
+            {
+                if(i>=coins[j])
+                    dp[i] = min(dp[i], dp[i-coins[j]]+1);
+            }
+        }
+        if(dp[amount]>=0&&dp[amount]<=amount)
+            return dp[amount];
+        return -1;
+    }
+};
+```
+
+
+
 #### 327.区间和的个数
 
 给定一个整数数组 nums，返回区间和在 [lower, upper] 之间的个数，包含 lower 和 upper。
@@ -4870,6 +4904,41 @@ public:
             cur = sum;
         }
         return sum;
+    }
+};
+```
+
+
+
+#### 518.零钱兑换II
+
+给定不同面额的硬币和一个总金额。写出函数来计算可以凑成总金额的硬币组合数。假设每一种面额的硬币有无限个。 
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//动态规划
+//dp[i]表示组成金额i的组合数
+//dp[i] = sum{dp[i-coin[j]]},j=0,1,...,n-1
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        vector<int> dp(amount+1);
+        dp[0] = 1;//组成金额0的只有一种
+        for(int j=0;j<coins.size();j++)
+        {
+            for(int i=1;i<=amount;i++)
+            {
+                if(i>=coins[j])
+                    dp[i] += dp[i-coins[j]];
+            }
+        }
+        // for(int i=0;i<dp.size();i++)
+        //     cout<<dp[i]<<endl;
+        return dp[amount];
     }
 };
 ```

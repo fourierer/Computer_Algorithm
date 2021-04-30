@@ -662,6 +662,59 @@ public:
 
 
 
+#### 40.组合总和II
+
+给定一个数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。candidates 中的每个数字在每个组合中只能使用一次。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+
+//使用leetcode90题的方法，先求子集，再求所有子集中和等于target的子集
+//超时，通过23/174
+class Solution {
+public:
+    vector<vector<int>> combinationSum2(vector<int>& nums, int target) {
+        vector<vector<int>> result;
+        //先将数组排序
+        sort(nums.begin(),nums.end());
+        //mask<(1<<nums.size())，假设nums.size()为4，则mask从0000到1111
+        for(int mask=0;mask<(1<<nums.size());mask++)
+        {
+            vector<int> tmp;
+            bool flag = true;
+            for(int i=0;i<nums.size();i++)
+            {
+                //根据mask来确定哪些数添加进当前数组
+                if(mask&(1<<i))
+                {
+                    //如果当前mask中第i位为1,第i-1位为0，并且nums[i]=nums[i-1]，则当前mask确定的数组舍弃
+                    if(i>0&&(mask>>(i-1) & 1)==0 && nums[i]==nums[i-1])
+                    {
+                        flag = false;
+                        break;
+                    }
+                    tmp.push_back(nums[i]);
+                }
+            }
+            if(flag&&EqualTarget(tmp, target))
+                result.push_back(tmp);
+        }
+        return result;
+    }
+private:
+    bool EqualTarget(vector<int> v, int target)
+    {
+        return accumulate(v.begin(), v.end(), 0)==target;
+    }
+};
+```
+
+
+
 #### 42.接雨水
 
 给定 *n* 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
@@ -2085,6 +2138,63 @@ public:
                 i = i + cnt + 1;
         }
         return -1;
+    }
+};
+```
+
+
+
+#### 136.只出现一次的数字
+
+给定一个**非空**整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//位运算
+//任何数和 0 做异或运算，结果仍然是原来的数，即 a⊕0=a。
+//任何数和其自身做异或运算，结果是 0，即 a⊕a=0。
+//异或运算满足交换律和结合律，即a⊕b⊕a=b⊕a⊕a=b⊕(a⊕a)=b⊕0=b
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int result = 0;
+        for(int i=0;i<nums.size();i++)
+        {
+            result ^= nums[i];
+        }
+        return result;
+    }
+};
+```
+
+
+
+#### 137.只出现一次的数字II
+
+给你一个整数数组 `nums` ，除某个元素仅出现 **一次** 外，其余每个元素都恰出现 **三次 。**请你找出并返回那个只出现了一次的元素。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//首先想到用哈希表，时间、空间复杂度都为O(n)
+//可以先对数组排序，随后三个一组进行遍历，出现一次的数，一定是三个数的第一个
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        for(int i=0;i<nums.size();i=i+3)
+        {
+            if((i==nums.size()-1)||(nums[i]<nums[i+1]))
+                return nums[i];
+        }
+        return 0;
     }
 };
 ```
@@ -3762,6 +3872,49 @@ public:
             else
                 return false;
         return true;
+    }
+};
+```
+
+
+
+#### 260.只出现一次的数字III
+
+给定一个整数数组 `nums`，其中恰好有两个元素只出现一次，其余所有元素均出现两次。 找出只出现一次的那两个元素。你可以按 **任意顺序** 返回答案。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//假设出现一次的两个数分别为a,b
+//首先将所有数字进行异或运算，得到a^b的结果x
+//在x中二进制遍历，找出现1的那一位，表示a和b的二进制在这一位不一样
+//随后根据这一位进行分类，为0的为一组，为1的为一组，则a,b必被分到不同组，并且相同数会被分到同一组
+//两组分别异或，得到a,b
+class Solution {
+public:
+    vector<int> singleNumber(vector<int>& nums) {
+        //获取两个出现一次的数的异或结果
+        int x = 0;
+        for(int i=0;i<nums.size();i++)
+            x ^= nums[i];
+        //找异或结果中为1的那一位，从低位找起
+        int flag = 1;
+        while((flag&x)==0)
+            flag<<=1;
+        int a = 0;
+        int b = 0;
+        //根据flag进行分组
+        for(int i=0;i<nums.size();i++)
+        {
+            if(flag&nums[i])
+                a ^= nums[i];
+            else
+                b ^= nums[i];
+        }
+        return vector<int>{a,b};
     }
 };
 ```

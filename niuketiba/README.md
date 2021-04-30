@@ -1211,7 +1211,58 @@ private:
 
 
 
-#### 48.在转动过的有序数组中寻找目标值
+#### NC46.加起来和为目标值的组合
+
+给出一组候选数 C 和一个目标数 T ，找出候选数中起来和等于 T 的所有组合。C 中的每个数字在一个组合中只能使用一次。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//超时，思路应该没问题
+class Solution {
+public:
+    vector<vector<int>> combinationSum2(vector<int>& nums, int target) {
+        vector<vector<int>> result;
+        //先将数组排序
+        sort(nums.begin(),nums.end());
+        //mask<(1<<nums.size())，假设nums.size()为4，则mask从0000到1111
+        for(int mask=0;mask<(1<<nums.size());mask++)
+        {
+            vector<int> tmp;
+            bool flag = true;
+            for(int i=0;i<nums.size();i++)
+            {
+                //根据mask来确定哪些数添加进当前数组
+                if(mask&(1<<i))
+                {
+                    //如果当前mask中第i位为1,第i-1位为0，并且nums[i]=nums[i-1]，则当前mask确定的数组舍弃
+                    if(i>0&&(mask>>(i-1) & 1)==0 && nums[i]==nums[i-1])
+                    {
+                        flag = false;
+                        break;
+                    }
+                    tmp.push_back(nums[i]);
+                }
+            }
+            if(flag&&EqualTarget(tmp, target))
+                result.push_back(tmp);
+        }
+        return result;
+    }
+private:
+    bool EqualTarget(vector<int> v, int target)
+    {
+        return accumulate(v.begin(), v.end(), 0)==target;
+    }
+};
+```
+
+
+
+#### NC48.在转动过的有序数组中寻找目标值
 
 给出一个转动过的有序数组，你事先不知道该数组转动了多少(例如,0 1 2 4 5 6 7可能变为4 5 6 7 0 1 2).在数组中搜索给出的目标值，如果能在数组中找到，返回它的索引，否则返回-1。假设数组中不存在重复项。
 
@@ -1523,7 +1574,7 @@ int main()
 
 
 
-#### NC53.给定一个链表，删除链表的倒数第 n*n* 个节点并返回链表的头指针
+#### NC53.给定一个链表，删除链表的倒数第 n个节点并返回链表的头指针
 
 例如，给出的链表为: 1→2→3→4→5, n= 2.删除了链表的倒数第 n个节点之后,链表变为1→2→3→5.
 

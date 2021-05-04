@@ -5248,6 +5248,132 @@ public:
 
 
 
+#### 690.员工的重要性
+
+给定一个保存员工信息的数据结构，它包含了员工 唯一的 id ，重要度 和 直系下属的 id 。
+
+比如，员工 1 是员工 2 的领导，员工 2 是员工 3 的领导。他们相应的重要度为 15 , 10 , 5 。那么员工 1 的数据结构是 [1, 15, [2]] ，员工 2的 数据结构是 [2, 10, [3]] ，员工 3 的数据结构是 [3, 5, []] 。注意虽然员工 3 也是员工 1 的一个下属，但是由于 并不是直系 下属，因此没有体现在员工 1 的数据结构中。
+
+现在输入一个公司的所有员工信息，以及单个员工 id ，返回这个员工和他所有下属的重要度之和。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<map>
+#include<queue>
+
+using namespace std;
+
+// Definition for Employee.
+class Employee
+{
+public:
+    int id;
+    int importance;
+    vector<int> subordinates;
+};
+
+//深度优先遍历，递归
+class Solution {
+public:
+    int getImportance(vector<Employee> employees, int id) {
+        int size = employees.size();
+        if(size==0)
+            return 0;
+        //在id_map中构建员工id和employee一一对应关系
+        for(int i=0;i<size;i++)
+        {
+            Employee employee = employees[i];
+            id_map[employee.id] = employee;
+        }
+        return dfs(id_map, id);
+    }
+private:
+    int result;
+    map<int, Employee> id_map;
+    int dfs(map<int, Employee> id_map, int id)
+    {
+        int size = id_map[id].subordinates.size();
+        if(size==0)
+            return id_map[id].importance;
+        for(int i=0;i<size;i++)
+            result += dfs(id_map, id_map[id].subordinates[i]);
+        return result;
+    }
+};
+
+class Solution {
+public:
+    int getImportance(vector<Employee*> employees, int id) {
+        int size = employees.size();
+        if(size==0)
+            return 0;
+        //在id_map中构建员工id和employee一一对应关系
+        for(int i=0;i<size;i++)
+        {
+            Employee* employee = employees[i];
+            id_map[employee->id] = employee;
+        }
+        return dfs(id_map, id);
+    }
+private:
+    map<int, Employee*> id_map;
+    int dfs(map<int, Employee*> id_map, int id)
+    {
+        int size = id_map[id]->subordinates.size();
+        if(size==0)
+            return id_map[id]->importance;
+        int result = id_map[id]->importance;
+        for(int i=0;i<size;i++)
+            result += dfs(id_map, id_map[id]->subordinates[i]);
+        return result;
+    }
+};
+
+
+//广度优先遍历，非递归
+class Solution {
+public:
+    int getImportance(vector<Employee*> employees, int id) {
+        int size = employees.size();
+        if(size==0)
+            return 0;
+        //在id_map中构建员工id和employee一一对应关系
+        for(int i=0;i<size;i++)
+        {
+            Employee* employee = employees[i];
+            id_map[employee->id] = employee;
+        }
+        return bfs(id_map, id);
+    }
+private:
+    map<int, Employee*> id_map;
+    int bfs(map<int, Employee*> id_map, int id)
+    {
+        int size = id_map[id]->subordinates.size();
+        if(size==0)
+            return id_map[id]->importance;
+        int result = 0;
+        queue<int> q;
+        q.push(id);
+        while(!q.empty())
+        {
+            int id_cur = q.front();
+            q.pop();
+            result += id_map[id_cur]->importance;
+            int sub_size = id_map[id_cur]->subordinates.size();
+            for(int i=0;i<sub_size;i++)
+            {
+                q.push(id_map[id_cur]->subordinates[i]);
+            }
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### 767.重构字符串
 
 给定一个字符串`S`，检查是否能重新排布其中的字母，使得两相邻的字符不同。若可行，输出任意可行的结果。若不可行，返回空字符串。

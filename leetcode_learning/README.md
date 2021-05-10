@@ -5610,6 +5610,63 @@ private:
 
 
 
+#### 872.叶子相似的树
+
+请考虑一棵二叉树上所有的叶子，这些叶子的值按从左到右的顺序排列形成一个 *叶值序列* 。如果有两棵二叉树的叶值序列是相同，那么我们就认为它们是 叶相似 的。如果给定的两个根结点分别为 root1 和 root2 的树是叶相似的，则返回 true；否则返回 false 。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode():val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x):val(x),left(nullptr),right(nullptr){}
+    TreeNode(int x, TreeNode*left, TreeNode* right):val(x),left(left),right(right){}
+};
+
+class Solution {
+public:
+    bool leafSimilar(TreeNode* root1, TreeNode* root2) {
+        vector<int> leaf1 = fun(root1);
+        vector<int> leaf2 = fun(root2);
+        if(leaf1.size()!=leaf2.size())
+            return false;
+        else
+        {
+            for(int i=0;i<leaf2.size();i++)
+                if(leaf1[i]!=leaf2[i])
+                    return false;
+        }
+        return true;
+    }
+private:
+    //求一棵树的叶子节点序列(叶值序列)
+    vector<int> fun(TreeNode* root)
+    {
+        vector<int> leaf;
+        Mid(root, leaf);
+        return leaf;
+    }
+    void Mid(TreeNode* root, vector<int>& v)
+    {
+        if(!root)
+            return;
+        Mid(root->left, v);
+        if((root->left==nullptr)&&(root->right==nullptr))
+            v.push_back(root->val);
+        Mid(root->right, v);
+    }
+};
+```
+
+
+
 #### 876.链表的中间结点
 
 给定一个带有头结点 `head` 的非空单链表，返回链表的中间结点；如果有两个中间结点，则返回第二个中间结点。

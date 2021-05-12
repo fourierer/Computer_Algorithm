@@ -6632,6 +6632,63 @@ int main()
 
 
 
+#### 1310.子数组异或查询
+
+有一个正整数数组 arr，现给你一个对应的查询数组 queries，其中 queries[i] = [Li, Ri]。对于每个查询 i，请你计算从 Li 到 Ri 的 XOR 值（即 arr[Li] xor arr[Li+1] xor ... xor arr[Ri]）作为本次查询的结果。并返回一个包含给定查询 queries 所有结果的数组。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//模拟题意,41/42个通过测试用例，超时
+class Solution {
+public:
+    vector<int> xorQueries(vector<int>& arr, vector<vector<int>>& queries) {
+        vector<int> result;
+        for(int i=0;i<queries.size();i++)
+        {
+            int start = queries[i][0];
+            int end = queries[i][1];
+            int tmp = 0;
+            for(int j = start;j<=end;j++)
+                tmp ^= arr[j];
+            result.push_back(tmp);
+        }
+        return result;
+    }
+};
+
+//Q(left,right)=arr[left]⊕…⊕arr[right]
+//=(arr[0]⊕…⊕arr[left−1])⊕(arr[0]⊕…⊕arr[left−1])⊕(arr[left]⊕…⊕arr[right])
+//=(arr[0]⊕…⊕arr[left−1])⊕(arr[0]⊕…⊕arr[right])
+//=xors[left]⊕xors[right+1]
+//只需计算数组xors即可，其中xors[0]=0;xors[i]=arr[0]⊕arr[1]⊕...⊕arr[i-1]
+class Solution {
+public:
+    vector<int> xorQueries(vector<int>& arr, vector<vector<int>>& queries) {
+        //构建xors数组
+        vector<int> xors(arr.size()+1);
+        xors[0] = 0;
+        for(int i=1;i<=arr.size();i++)
+            xors[i] = xors[i-1]^arr[i-1];
+        
+        //计算查询结果
+        vector<int> result;
+        for(int i=0;i<queries.size();i++)
+        {
+            int start = queries[i][0];
+            int end = queries[i][1];
+            result.push_back(xors[start]^xors[end+1]);
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### 1356.根据数字二进制下1的数目排序
 
 给你一个整数数组 arr 。请你将数组中的元素按照其二进制表示中数字 1 的数目升序排序。如果存在多个数字二进制中 1 的数目相同，则必须将它们按照数值大小升序排列。请返回排序后的数组。

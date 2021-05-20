@@ -5575,6 +5575,44 @@ private:
 
 
 
+#### 692.前K个高频单词
+
+给一非空的单词列表，返回前 *k* 个出现次数最多的单词。返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率，按字母顺序排序。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<string>
+#include<map>
+#include<iterator>
+
+using namespace std;
+
+//先用一个map记录各个单词出现的频次，然后使用一个数组result记录共出现了哪些单词，
+//在该数组result的基础上，按照字符串从小到大，map中出现频次从大到小排序，
+//最后删除result中k个元素之后的那些元素即可。
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        map<string, int> str_count;
+        for(int i=0;i<words.size();i++)
+            str_count[words[i]]++;
+        //result中包含words中出现过的单词
+        vector<string> result;
+        for(map<string, int>::iterator it = str_count.begin();it!=str_count.end();it++)
+            result.push_back(it->first);
+        sort(result.begin(), result.end(), [&](string x, string y){
+            return str_count[x]==str_count[y]?x<y:str_count[x]>str_count[y];
+        });
+        //删除result中k个元素以后的元素
+        result.erase(result.begin()+k, result.end());
+        return result;
+    }
+};
+```
+
+
+
 #### 767.重构字符串
 
 给定一个字符串`S`，检查是否能重新排布其中的字母，使得两相邻的字符不同。若可行，输出任意可行的结果。若不可行，返回空字符串。

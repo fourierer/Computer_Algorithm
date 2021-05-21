@@ -6714,8 +6714,6 @@ private:
 
 
 
-
-
 #### 1030.距离顺序排列矩阵单元格
 
 给出 R 行 C 列的矩阵，其中的单元格的整数坐标为 (r, c)，满足 0 <= r < R 且 0 <= c < C。另外，在该矩阵中给出了一个坐标为 (r0, c0) 的单元格。返回矩阵中的所有单元格的坐标，并按到 (r0, c0) 的距离从最小到最大的顺序排，其中，两单元格(r1, c1) 和 (r2, c2) 之间的距离是曼哈顿距离，|r1 - r2| + |c1 - c2|。（可以按任何满足此条件的顺序返回答案。）
@@ -6797,6 +6795,40 @@ int main()
         cout<<v2[i].size()<<endl;
     return 0;
 }
+```
+
+
+
+#### 1035.不相交的线
+
+在两条独立的水平线上按给定的顺序写下 nums1 和 nums2 中的整数。现在，可以绘制一些连接两个数字 nums1[i] 和 nums2[j] 的直线，这些直线需要同时满足满足： nums1[i] == nums2[j]，且绘制的直线不与任何其他连线（非水平线）相交。请注意，连线即使在端点也不能相交：每个数字只能属于一条连线。以这种方法绘制线条，并返回可以绘制的最大连线数。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//最长公共子序列长度的解法
+//dp[i][j]表示nums1[0]~nums1[i-1]与nums2[0]~nums[j-1]之间不相交的连线个数
+//状态转移方程和最长公共子序列一样
+class Solution {
+public:
+    int maxUncrossedLines(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size();
+        int n = nums2.size();
+        vector<vector<int>> dp(m+1, vector<int>(n+1));
+        for(int i=1;i<m+1;i++)
+            for(int j=1;j<n+1;j++)
+            {
+                if(nums1[i-1]==nums2[j-1])
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                else
+                    dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+            }
+        return dp[m][n];
+    }
+};
 ```
 
 

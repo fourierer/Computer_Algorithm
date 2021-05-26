@@ -1016,3 +1016,13 @@ int main()
 }
 ```
 
+
+
+#### 2.string反转
+
+```c++
+string s = "abcd";
+reverse(s.begin(), s.end());
+cout<<s<<endl;
+```
+

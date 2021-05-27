@@ -5161,6 +5161,45 @@ public:
 
 
 
+#### 461.汉明距离
+
+两个整数之间的汉明距离指的是这两个数字对应二进制位不同的位置的数目。给出两个整数 x 和 y，计算它们之间的汉明距离。注意：$0 ≤ x,y < 2^{31}$.
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    int hammingDistance(int x, int y) {
+        int hamming_distance = 0;
+        for(int i=0;i<31;i++)
+        {
+            int flag = 1<<i;
+            if((x&flag)!=(y&flag))
+                hamming_distance++;
+        }
+        return hamming_distance;
+    }
+};
+
+//或者
+class Solution {
+public:
+    int hammingDistance(int x, int y) {
+        int s = x ^ y, ret = 0;
+        while (s) {
+            ret += s & 1;
+            s >>= 1;
+        }
+        return ret;
+    }
+};
+```
+
+
+
 #### 493.翻转对
 
 给定一个数组 nums ，如果 i < j 且 nums[i] > 2*nums[j] 我们就将 (i, j) 称作一个重要翻转对。你需要返回给定数组中的重要翻转对的数量。

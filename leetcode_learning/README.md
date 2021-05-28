@@ -1189,7 +1189,7 @@ public:
         int left = newInterval[0];
         int right = newInterval[1];
         vector<vector<int> > ans;
-        bool flag = false;//记录新区间是否已经被插入
+        bool flag = false;//记录新区间是否已经插入
         for(int i=0;i<intervals.size();i++)
         {
             vector<int> tmp_v = intervals[i];
@@ -2057,7 +2057,7 @@ public:
 
 #### 121.买卖股票的最佳时机
 
-给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。你只能选择 某一天 买入这只股票，并选择在未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
 
 ```c++
 #include<iostream>
@@ -2084,9 +2084,9 @@ public:
 
 
 
-
-
 #### 122.买卖股票的最佳时机ii
+
+给定一个数组 prices ，其中 prices[i] 是一支给定股票第 i 天的价格。设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
 
 解法一、贪心
 
@@ -2145,6 +2145,8 @@ public:
 
 
 #### 123.买卖股票的最佳时机III
+
+给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。设计一个算法来计算你所能获取的最大利润。你最多可以完成 两笔 交易。注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
 
 ```c++
 #include<iostream>
@@ -5194,6 +5196,39 @@ public:
             s >>= 1;
         }
         return ret;
+    }
+};
+```
+
+
+
+#### 477.汉明距离总和
+
+两个整数的 [汉明距离](https://baike.baidu.com/item/汉明距离/475174?fr=aladdin) 指的是这两个数字的二进制数对应位不同的数量。计算一个数组中，任意两个数之间汉明距离的总和。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    int totalHammingDistance(vector<int>& nums) {
+        int result = 0;
+        int size = nums.size();
+        //统计第i位的汉明距离，已知所有数小于2^30
+        //10^9<1000^3<1024^3<2^30
+        for(int i=0;i<30;i++)
+        {
+            int count_c = 0;
+            for(int j = 0;j<size;j++)
+            {
+                if(nums[j]&(1<<i))
+                    count_c++;
+            }
+            result += count_c*(size-count_c);
+        }
+        return result;
     }
 };
 ```

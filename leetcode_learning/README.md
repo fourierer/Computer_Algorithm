@@ -2156,7 +2156,7 @@ public:
 using namespace std;
 
 //动态规划
-//dp[k][i]表示在第天结束后，经过k次交易(买入且卖出算一次交易)的收益
+//dp[k][i]表示在第i天结束后，经过k次交易(买入且卖出算一次交易)的收益
 
 //超时，通过202/214个测试用例
 class Solution {
@@ -6939,6 +6939,62 @@ public:
                     dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
             }
         return dp[m][n];
+    }
+};
+```
+
+
+
+#### 1074.元素和为目标值的子矩阵数量
+
+给出矩阵 matrix 和目标值 target，返回元素总和等于目标值的非空子矩阵的数量。子矩阵 x1, y1, x2, y2 是满足 x1 <= x <= x2 且 y1 <= y <= y2 的所有单元 matrix[x][y] 的集合。如果 (x1, y1, x2, y2) 和 (x1', y1', x2', y2') 两个子矩阵中部分坐标不同（如：x1 != x1'），那么这两个子矩阵也不同。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int numSubmatrixSumTarget(vector<vector<int>>& matrix, int target) {
+        int count = 0;
+        int m = matrix.size();
+        int n = matrix[0].size();
+        for(int row1 = 0;row1<m;row1++)
+        {
+            //列和数组
+            vector<int> sum_col(n, 0);
+            for(int row2 = row1;row2<m;row2++)
+            {
+                for(int col=0;col<n;col++)
+                {
+                    sum_col[col] += matrix[row2][col];//每次row2增加，sum_col都会更新
+                }
+                /*
+                cout<<"当前sum_col为:";
+                for(int col=0;col<n;col++)
+                    cout<<sum_col[col]<<" ";
+                cout<<endl;
+                */
+                //计算区域和
+                for(int start=0;start<n;start++)
+                {
+                    //sum_col中从start到end之间的和
+                    int sum_local = 0;
+                    for(int end=start;end<n;end++)
+                    {
+                        sum_local += sum_col[end];
+                        if(sum_local==target)
+                        {
+                            //cout<<row1<<" "<<row2<<" "<<start<<" "<<end<<endl;
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     }
 };
 ```

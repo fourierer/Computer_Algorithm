@@ -4765,6 +4765,37 @@ public:
 
 
 
+#### 342.4的幂
+
+给定一个整数，写一个函数来判断它是否是 4 的幂次方。如果是，返回 true ；否则，返回 false 。整数 n 是 4 的幂次方需满足：存在整数 x 使得 n == 4x。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    bool isPowerOfFour(int n) {
+        if(n==0)
+            return false;
+        if(n==1)
+            return true;
+        while(n>3)
+        {
+            if(n%4!=0)
+                return false;
+            n /= 4;
+        }
+        if(n==1)
+            return true;
+        return false;
+    }
+};
+```
+
+
+
 #### 344.反转字符串
 
 编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 char[] 的形式给出。不要给另外的数组分配额外的空间，你必须原地修改输入数组、使用 O(1) 的额外空间解决这一问题。你可以假设数组中的所有字符都是 ASCII 码表中的可打印字符。

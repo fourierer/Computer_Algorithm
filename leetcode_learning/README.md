@@ -7313,6 +7313,39 @@ public:
 
 
 
+#### 1291.顺次数
+
+我们定义「顺次数」为：每一位上的数字都比前一位上的数字大 1 的整数。请你返回由 [low, high] 范围内所有顺次数组成的 有序 列表（从小到大排序）。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> sequentialDigits(int low, int high) {
+        vector<int> result;
+        for(int i=1;i<=9;i++)
+        {
+            //第一个for循环决定第一位数字，假设为4
+            int num = i;
+            for(int j=i+1;j<=9;j++)
+            {
+                //第二个for循环遍历以4开头的顺位加一的数字，如45,456,4567,...
+                num = num*10 + j;
+                if(low<=num&&num<=high)
+                    result.push_back(num);
+            }
+        }
+        sort(result.begin(),result.end());
+        return result;
+    }
+};
+```
+
+
+
 #### 1310.子数组异或查询
 
 有一个正整数数组 arr，现给你一个对应的查询数组 queries，其中 queries[i] = [Li, Ri]。对于每个查询 i，请你计算从 Li 到 Ri 的 XOR 值（即 arr[Li] xor arr[Li+1] xor ... xor arr[Ri]）作为本次查询的结果。并返回一个包含给定查询 queries 所有结果的数组。

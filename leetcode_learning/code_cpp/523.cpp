@@ -54,7 +54,7 @@ public:
         //for(int i=0;i<=n;i++)
             //cout<<sum[i]<<endl;
         //对sum中每个值计算除以k的余数，并将余数和索引存于map中
-        //如果
+        //如果两个数关于k同余，则相减的结果一定可以被k整除
         map<int, int> mod;
         for(int i=0;i<=n;i++)
         {

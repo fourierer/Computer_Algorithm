@@ -4,7 +4,7 @@
 using namespace std;
 
 //思路：dp[i]表示金额为i所需要的最少硬币数
-//dp[i] = min{dp[i],dp[i-coins[i]]+1},i=0,1,2,...,n-1
+//dp[i] = min{dp[i],dp[i-coins[j]]+1},j=0,1,2,...,n-1
 class Solution {
 public:
     int coinChange(vector<int>& coins, int amount) {

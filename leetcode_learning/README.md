@@ -4420,6 +4420,38 @@ public:
 
 
 
+#### 278.第一个错误的版本
+
+你是产品经理，目前正在带领一个团队开发新的产品。不幸的是，你的产品的最新版本没有通过质量检测。由于每个版本都是基于之前的版本开发的，所以错误的版本之后的所有版本都是错的。假设你有 n 个版本 [1, 2, ..., n]，你想找出导致之后所有版本出错的第一个错误的版本。你可以通过调用 bool isBadVersion(version) 接口来判断版本号 version 是否在单元测试中出错。实现一个函数来查找第一个错误的版本。你应该尽量减少对调用 API 的次数。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    int firstBadVersion(long long int n) {
+        return search(1,n);
+    }
+private:
+    long long int search(long long int start, long long int end)
+    {
+        while(start<end)
+        {
+            long long int mid = (start+end)/2;//也可以使用int类型的，但是使用int mid = left + (right - left) / 2;写法，防止计算时溢出
+            if(isBadVersion(mid))
+                end = mid;
+            else
+                start = mid+1;
+        }
+        return start;
+    }
+};
+```
+
+
+
 #### 279.完全平方数
 
 给定正整数 n，找到若干个完全平方数（比如 1, 4, 9, 16, ...）使得它们的和等于 n。你需要让组成和的完全平方数的个数最少。给你一个整数 n ，返回和为 n 的完全平方数的 最少数量 。完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。

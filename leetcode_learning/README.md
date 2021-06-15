@@ -5307,6 +5307,44 @@ public:
 
 
 
+#### 374.猜数字大小
+
+猜数字游戏的规则如下：
+
+每轮游戏，我都会从 1 到 n 随机选择一个数字。 请你猜选出的是哪个数字。
+如果你猜错了，我会告诉你，你猜测的数字比我选出的数字是大了还是小了。
+你可以通过调用一个预先定义好的接口 int guess(int num) 来获取猜测结果，返回值一共有 3 种可能的情况（-1，1 或 0）：
+
+-1：我选出的数字比你猜的数字小 pick < num
+1：我选出的数字比你猜的数字大 pick > num
+0：我选出的数字和你猜的数字一样。恭喜！你猜对了！pick == num
+返回我选出的数字。
+
+```c++
+class Solution {
+public:
+    int guessNumber(int n) {
+        int start = 1;
+        int end = n;
+        while(start<end)
+        {
+            int mid = start + (end - start)/2;//防止溢出
+            if(guess(mid)==0)
+                return mid;
+            else if(guess(mid)==1)
+                start = mid + 1;
+            else
+                end = mid;
+        }
+        return start;
+    }
+};
+```
+
+
+
+
+
 #### 402. 移掉K位数字
 
 给定一个以字符串表示的非负整数 *num*，移除这个数中的 *k* 位数字，使得剩下的数字最小。
@@ -6509,6 +6547,60 @@ private:
         MidOrder(root->left);
         v.push_back(root->val);
         MidOrder(root->right);
+    }
+};
+```
+
+
+
+#### 852.山脉数组的峰顶索引
+
+符合下列属性的数组 arr 称为 山脉数组 ：
+arr.length >= 3
+存在 i（0 < i < arr.length - 1）使得：
+arr[0] < arr[1] < ... arr[i-1] < arr[i]
+arr[i] > arr[i+1] > ... > arr[arr.length - 1]
+给你由整数组成的山脉数组 arr ，返回任何满足 arr[0] < arr[1] < ... arr[i - 1] < arr[i] > arr[i + 1] > ... > arr[arr.length - 1] 的下标 i 。
+
+```c++
+
+//题目保证是一个山脉数组，且长度大于等于3
+//遍历
+class Solution {
+public:
+    int peakIndexInMountainArray(vector<int>& arr) {
+        int size = arr.size();
+        for(int i=1;i<size;)
+        {
+            if(arr[i]>arr[i-1])
+                i++;
+            else
+                return i-1;
+        }
+        return -1;
+    }
+};
+
+
+//二分
+class Solution {
+public:
+    int peakIndexInMountainArray(vector<int>& arr) {
+        int ans = 0;
+        int start = 0;
+        int end = arr.size() - 1;
+        while(start<=end)
+        {
+            int mid = start + (end-start)/2;
+            if(arr[mid]>arr[mid+1])
+            {
+                ans = mid;//已经记录下mid的位置
+                end = mid - 1;
+            }
+            else
+                start = mid + 1;                
+        }
+        return ans;
     }
 };
 ```

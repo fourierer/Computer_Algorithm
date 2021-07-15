@@ -52,7 +52,7 @@ int main()
 {
     string s = "abcdefg";
     string sub_str = s.substr(0,3);//从索引0开始，连续取3个字符
-    cout<<sub_str<<endl;
+    cout<<sub_str<<endl; // "abc"
     return 0;
 }
 

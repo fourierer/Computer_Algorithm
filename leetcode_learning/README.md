@@ -1160,6 +1160,47 @@ int main()
 
 
 
+#### 49.字母异位词分组
+
+给定一个字符串数组，将字母异位词组合在一起。可以按任意顺序返回结果列表。字母异位词指字母相同，但排列不同的字符串。
+
+示例 1:
+
+输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+```c++
+#include<iostream>
+#include<vector>
+#include<string>
+#include<map>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        map<string, vector<string>> m;
+        for(int i=0;i<strs.size();i++)
+        {
+            string str_tmp = strs[i];
+            sort(str_tmp.begin(), str_tmp.end());
+            m[str_tmp].push_back(strs[i]);
+        }
+        
+        //输出map中的分组结果
+        vector<vector<string>> v;
+        for(auto it=m.begin();it!=m.end();it++)
+        {
+            v.push_back(it->second);
+        }
+        return v;
+    }
+};
+```
+
+
+
 #### 54.螺旋矩阵
 
 给你一个 `m` 行 `n` 列的矩阵 `matrix` ，请按照 **顺时针螺旋顺序** ，返回矩阵中的所有元素。（剑指offer19题顺时针打印矩阵）

@@ -6,7 +6,7 @@ public:
         int n = nums.size();
         long long total = 0;
         int left = 0, res = 1;
-        for (int right = 1; right < n; ++r)
+        for (int right = 1; right < n; ++right)
         {
             //每次移动右边界增加的操作次数
             total += (long long)(nums[right] - nums[right - 1]) * (right - left);

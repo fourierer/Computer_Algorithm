@@ -8805,6 +8805,53 @@ private:
 
 
 
+#### 1736.替换隐藏数字得到的最晚时间
+
+给你一个字符串 time ，格式为 hh:mm（小时：分钟），其中某几位数字被隐藏（用 ? 表示）。有效的时间为 00:00 到 23:59 之间的所有时间，包括 00:00 和 23:59 。替换 time 中隐藏的数字，返回你可以得到的最晚有效时间。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    string maximumTime(string time) {
+        if(time[0]=='?')
+        {
+            if(time[1]=='?')
+            {
+                time[0] = '2';
+                time[1] = '3';
+            }
+            else if(time[1]-'0'<=3)
+                time[0] = '2';
+            else
+                time[0] = '1';
+        }
+        if(time[0]=='2')
+        {
+            if(time[1]=='?')
+                time[1] = '3';
+        }
+        else
+        {
+            if(time[1]=='?')
+                time[1] = '9';
+        }
+        if(time[3]=='?')
+            time[3] = '5';
+        if(time[4]=='?')
+            time[4] = '9';
+        return time;
+    }
+};
+```
+
+
+
+
+
 #### 1738.找出第K大的异或坐标值
 
 给你一个二维矩阵 matrix 和一个整数 k ，矩阵大小为 m x n 由非负整数组成。矩阵中坐标 (a, b) 的 值 可由对所有满足 $0\leq i\leq a<m$ 且 $0\leq j\leq b<n$ 的元素 $matrix[i][j]$（下标从 0 开始计数）执行异或运算得到。请你找出 matrix 的所有坐标中第 k 大的值（k 的值从 1 开始计数）。
@@ -9054,6 +9101,38 @@ public:
         for(int i=0;i<size/2;i++)
         {
             result = max(result, nums[i]+nums[size-1-i]);
+        }
+        return result;
+    }
+};
+```
+
+
+
+#### 1893.检查是否区域内所有整数都被覆盖
+
+给你一个二维整数数组 ranges 和两个整数 left 和 right 。每个 ranges[i] = [starti, endi] 表示一个从 starti 到 endi 的 闭区间 。如果闭区间 [left, right] 内每个整数都被 ranges 中 至少一个 区间覆盖，那么请你返回 true ，否则返回 false 。已知区间 ranges[i] = [starti, endi] ，如果整数 x 满足 starti <= x <= endi ，那么我们称整数x 被覆盖了。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    bool isCovered(vector<vector<int>>& ranges, int left, int right)
+    {
+        bool result = true;
+        for(int index=left;index<=right;index++)
+        {
+            int flag = 0;
+            for(auto range: ranges)
+            {
+                if(index>=range[0]&&index<=range[1])
+                    flag=1;
+            }
+            if(flag==0)
+                result = false;
         }
         return result;
     }

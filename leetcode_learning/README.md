@@ -2721,7 +2721,7 @@ public:
 
 
 
-#### 144.二叉树的前序遍历，
+#### 144.二叉树的前序遍历
 
 给定一个二叉树，返回它的前序遍历
 
@@ -4656,7 +4656,7 @@ using namespace std;
 
 //将和视为要凑成的金额数，完全平方数视为硬币，和零钱兑换一样的完全背包问题
 //dp[i]表示组成和为n的最少完全平方和数
-//dp[i] = min{dp[i], dp[i-square[j]]},j=0,1,...,n-1
+//dp[i] = min{dp[i], dp[i-square[j]]+1},j=0,1,...,n-1
 class Solution {
 public:
     int numSquares(int n) {
@@ -5303,11 +5303,6 @@ public:
 #include<map>
 #include<vector>
 #include<iterator>
-#include<iostream>
-#include<set>
-#include<map>
-#include<vector>
-#include<iterator>
 
 using namespace std;
 
@@ -5809,7 +5804,7 @@ public:
 using namespace std;
 
 //思路：三维背包问题，第一维度为字符串个数，第二维度为0的个数，第三维度为1的个数
-//dp[i][j][k]表示在0容量为j，1容量为k，前k个字符串最多包含的字符串的个数
+//dp[i][j][k]表示在0容量为j，1容量为k，前i个字符串最多包含的字符串的个数
 //则dp[i][j][k]=max{dp[i-1][j][k],dp[i-1][j-zeros][k-ones]+1}
 class Solution {
 public:
@@ -6100,7 +6095,7 @@ public:
 
 如果存在，返回 true ；否则，返回 false 。如果存在一个整数 n ，令整数 x 符合 x = n * k ，则称 x 是 k 的一个倍数。
 
-```c+=
+```c++
 #include<iostream>
 #include<vector>
 #include<map>
@@ -6308,6 +6303,62 @@ private:
     }
 };
 ```
+
+
+
+#### 611.有效三角形的个数
+
+给定一个包含非负整数的数组，你的任务是统计其中可以组成三角形三条边的三元组个数。
+
+示例 1:
+
+```
+输入: [2,2,3,4]
+输出: 3
+解释:
+有效的组合是: 
+2,3,4 (使用第一个 2)
+2,3,4 (使用第二个 2)
+2,2,3
+```
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int triangleNumber(vector<int>& nums) {
+        int count = 0;
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        for(int i=0;i<n;i++)
+            for(int j=i+1;j<n;j++)
+            {
+                int left = j+1;
+                int right = n-1;
+                int k = j;
+                while(left<=right)
+                {
+                    int mid = left + (right-left)/2;
+                    if(nums[mid]<nums[i]+nums[j])
+                    {
+                        k = mid;
+                        left = mid + 1;
+                    }
+                    else
+                        right = mid - 1;
+                }
+                count += k-j;//k算，j不算
+            }
+        return count;
+    }
+};
+```
+
+
 
 
 

@@ -1455,6 +1455,57 @@ private:
 
 
 
+#### 64.最小路径和
+
+给定一个包含非负整数的 `*m* x *n*` 网格 `grid` ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+
+**说明：**每次只能向下或者向右移动一步。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+
+//dp[i][j]表示从[0,0]->[i,j]的最短路径和
+//dp[i][j]=min{dp[i-1][j],dp[i][j-1]} + matrix[i][j]
+class Solution {
+public:
+    /**
+     * 
+     * @param matrix int整型vector<vector<>> the matrix
+     * @return int整型
+     */
+    int minPathSum(vector<vector<int> >& matrix) {
+        // write code here
+        int m = matrix.size();
+        int n = matrix[0].size();
+        vector<vector<int>> dp(m, vector<int>(n,0));
+        int sum = 0;
+        //给第一行赋值
+        for(int i = 0;i<m;i++)
+        {
+            sum += matrix[i][0];
+            dp[i][0] = sum;
+        }
+        sum = 0;
+        //给第一列赋值
+        for(int j=0;j<n;j++)
+        {
+            sum += matrix[0][j];
+            dp[0][j] = sum;
+        }
+        for(int i=1;i<m;i++)
+            for(int j=1;j<n;j++)
+                dp[i][j] = min(dp[i][j-1],dp[i-1][j]) + matrix[i][j];
+        return dp[m-1][n-1];
+    }
+};
+```
+
+
+
 #### 72.编辑距离
 
 给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。你可以对一个单词进行如下三种操作：
@@ -2375,6 +2426,49 @@ public:
     }
 };
 ```
+
+
+
+#### 124.二叉树中的最大路径和
+
+路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点。
+
+路径和 是路径中各节点值的总和。给你一个二叉树的根节点 root ，返回其 最大路径和 
+
+```c++
+class Solution {
+private:
+    int maxSum = INT_MIN;
+
+public:
+    int maxGain(TreeNode* node) {
+        if (node == nullptr) {
+            return 0;
+        }
+        
+        // 递归计算左右子节点的最大贡献值
+        // 只有在最大贡献值大于 0 时，才会选取对应子节点
+        int leftGain = max(maxGain(node->left), 0);
+        int rightGain = max(maxGain(node->right), 0);
+
+        // 节点的最大路径和取决于该节点的值与该节点的左右子节点的最大贡献值
+        int priceNewpath = node->val + leftGain + rightGain;
+
+        // 更新答案
+        maxSum = max(maxSum, priceNewpath);
+
+        // 返回节点的最大贡献值
+        return node->val + max(leftGain, rightGain);
+    }
+
+    int maxPathSum(TreeNode* root) {
+        maxGain(root);
+        return maxSum;
+    }
+};
+```
+
+
 
 
 

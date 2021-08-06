@@ -2425,6 +2425,34 @@ public:
         return dp[count][size-1];
     }
 };
+
+//一般思路：
+//dp[k][i]表示前i天交易k次的最大收益
+
+//百度面试的时候给了个更简单的方法，把卖出和买入分开计算，即共有2k次操作：
+//dp[k][i] = max(dp[k][i-1], max_j(v[i]-v[j]+dp[k-1][j]))
+//买
+//dp[k][i] = max(dp[k][i-1], -v[i]+dp[k-1][j]))
+//卖
+//dp[k][i] = max(dp[k][i-1], v[i]+dp[k-1][j]))
+
+
+int fun(vector<int> v, int k)
+{
+    int size = v.size();
+    vector<vector<int>> dp(2*k+1, vector<int>(size+1,INT_MIN));
+    
+    for(int count=1;count<=2*k;count++)
+        for(int i=1;i<=size;i++)
+        {
+            if(count%2==1)
+                dp[count][i] = max(dp[count][i-1], -v[i]+dp[count-1][i]);
+            else
+                dp[count][i] = max(dp[count][i-1], v[i]+dp[count-1][i]);
+        }
+    return dp[2*k][size];
+}
+
 ```
 
 

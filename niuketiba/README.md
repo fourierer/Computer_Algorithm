@@ -1436,7 +1436,7 @@ private:
             else
             {
                 cur->next = l2;
-                l2 = l2->next;
+                l2 = l2->next; 
             }
             cur = cur->next;
         }

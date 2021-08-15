@@ -2184,7 +2184,7 @@ public:
 //所以只需要同时保存最大值和最小值，就可以写出状态转移方程了。
 //a[i] > 0时：
 //dp_max[i] = max(a[i], a[i]*dp_max[i-1])
-//dp_min[i] = min(a[i], a[i]*dp_minv[i-1])
+//dp_min[i] = min(a[i], a[i]*dp_min[i-1])
 //a[i] < 0时：
 //dp_max[i] = max(a[i], a[i]*dp_min[i-1])
 //dp_min[i] = min(a[i], a[i]*dp_max[i-1])

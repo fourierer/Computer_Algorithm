@@ -6591,6 +6591,53 @@ private:
 
 
 
+#### 576.出界的路径数
+
+给你一个大小为 m x n 的网格和一个球。球的起始坐标为 [startRow, startColumn] 。你可以将球移到在四个方向上相邻的单元格内（可以穿过网格边界到达网格之外）。你 最多 可以移动 maxMove 次球。
+
+给你五个整数 m、n、maxMove、startRow 以及 startColumn ，找出并返回可以将球移出边界的路径数量。因为答案可能非常大，返回对 $10^9 + 7$ 取余 后的结果。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//dp[i][j][k]表示移动i次后位置在(j,k)的路径数
+//边界：dp[0][startRow][startColumn]=0,dp[0][j][k]=1,j!=startRow,k!=startColumn
+//假设从(j,k)->(j',k'):
+//(1)如果(j',k')未出界，则dp[i+1][j'][k'] += dp[i][j][k];
+//(2)如果(j',k')出界，则result += dp[i][j][k]
+class Solution {
+public:
+    int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
+        vector<vector<int>> direction = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        int result = 0;
+        int MOD = 1000000007;
+        vector<vector<vector<int>>> dp(maxMove+1, vector<vector<int>>(m, vector<int>(n)));
+        //边界
+        dp[0][startRow][startColumn] = 1;
+        for(int i=0;i<maxMove;i++)
+            for(int j=0;j<m;j++)
+                for(int k=0;k<n;k++)
+                {
+                    for(auto dir:direction)
+                    {
+                        int j1 = j+dir[0];
+                        int k1 = k+dir[1];
+                        if(j1>=0&&j1<m&&k1>=0&&k1<n)
+                            dp[i+1][j1][k1] = (dp[i+1][j1][k1] + dp[i][j][k]) % MOD;
+                        else
+                            result = (result + dp[i][j][k]) % MOD;
+                    }
+                }
+        return result;
+    }
+};
+```
+
+
+
 #### 611.有效三角形的个数
 
 给定一个包含非负整数的数组，你的任务是统计其中可以组成三角形三条边的三元组个数。

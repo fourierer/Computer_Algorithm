@@ -6591,6 +6591,56 @@ private:
 
 
 
+#### 551.学生出勤记录I
+
+给你一个字符串 s 表示一个学生的出勤记录，其中的每个字符用来标记当天的出勤情况（缺勤、迟到、到场）。记录中只含下面三种字符：
+
+```
+'A'：Absent，缺勤
+'L'：Late，迟到
+'P'：Present，到场
+```
+
+
+如果学生能够 同时 满足下面两个条件，则可以获得出勤奖励：按 总出勤 计，学生缺勤（'A'）严格 少于两天。学生 不会 存在 连续 3 天或 3 天以上的迟到（'L'）记录。如果学生可以获得出勤奖励，返回 true ；否则，返回 false 。
+
+```c++
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+class Solution {
+public:
+    bool checkRecord(string s) {
+        int absent = 0;
+        int late = 0;
+        for(auto c:s)
+        {
+            if(c=='A')
+            {
+                absent++;
+                if(absent==2)
+                    return false;
+            }
+            if(c=='L')
+            {
+                late++;
+                if(late==3)
+                    return false;
+            }
+            else
+                late = 0;
+        }
+        return true;
+    }
+};
+```
+
+
+
+
+
 #### 576.出界的路径数
 
 给你一个大小为 m x n 的网格和一个球。球的起始坐标为 [startRow, startColumn] 。你可以将球移到在四个方向上相邻的单元格内（可以穿过网格边界到达网格之外）。你 最多 可以移动 maxMove 次球。

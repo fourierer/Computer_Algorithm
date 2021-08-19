@@ -5487,6 +5487,63 @@ public:
 
 
 
+#### 345.反转字符串中的元音字母
+
+编写一个函数，以字符串作为输入，反转该字符串中的元音字母。
+
+示例 1：
+
+```
+输入："hello"
+输出："holle"
+```
+
+示例 2：
+
+```
+输入："leetcode"
+输出："leotcede"
+```
+
+```c++
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+class Solution {
+public:
+    string reverseVowels(string s) {
+        int n = s.size();
+        int start = 0;
+        int end = s.size() - 1;
+        while(start<end)
+        {
+            while(start<n&&!IsVower(s[start]))
+                start++;
+            while(end>=0&&!IsVower(s[end]))
+                end--;
+            if(start<end)
+            {
+                swap(s[start], s[end]); //交换之后，当前start和end处都是元音，所以需要start++，end--
+                start++;
+                end--;
+            }
+        }
+        return s;
+    }
+private:
+    bool IsVower(char c)
+    {
+        if(c=='a'||c=='e'||c=='i'||c=='o'||c=='u'||c=='A'||c=='E'||c=='I'||c=='O'||c=='U')
+            return true;
+        return false;
+    }
+};
+```
+
+
+
 #### 349.两个数组的交集
 
 给定两个数组，编写一个函数来计算它们的交集。

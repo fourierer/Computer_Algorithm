@@ -7235,7 +7235,7 @@ private:
 
 
 
-#### 781.二叉搜索树节点最小距离
+#### 783.二叉搜索树节点最小距离
 
 给你一个二叉搜索树的根节点 `root` ，返回 **树中任意两不同节点值之间的最小差值** 。
 
@@ -7274,6 +7274,48 @@ private:
         MidOrder(root->left);
         v.push_back(root->val);
         MidOrder(root->right);
+    }
+};
+```
+
+
+
+#### 797.所有可能的路径
+
+给你一个有 n 个节点的 有向无环图（DAG），请你找出所有从节点 0 到节点 n-1 的路径并输出（不要求按特定顺序）
+
+二维数组的第 i 个数组中的单元都表示有向图中 i 号节点所能到达的下一些节点，空就是没有下一个结点了。
+
+译者注：有向图是有方向的，即规定了 a→b 你就不能从 b→a 。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+        stk.push_back(0);
+        dfs(graph, 0, graph.size() - 1);
+        return ans;
+    }
+private:
+    vector<vector<int>> ans;
+    vector<int> stk;
+
+    void dfs(vector<vector<int>>& graph, int x, int n) {
+        if (x == n) {
+            ans.push_back(stk);
+            return;
+        }
+        for (auto& y : graph[x])//遍历x能到达的下一个节点
+        {
+            stk.push_back(y);
+            dfs(graph, y, n);
+            stk.pop_back();//遍历完再pop出当前节点y
+        }
     }
 };
 ```

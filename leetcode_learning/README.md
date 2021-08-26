@@ -7572,6 +7572,46 @@ public:
 
 
 
+#### 881.救生艇
+
+第 i 个人的体重为 people[i]，每艘船可以承载的最大重量为 limit。每艘船最多可同时载两人，但条件是这些人的重量之和最多为 limit。返回载到每一个人所需的最小船数。(保证每个人都能被船载)。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int numRescueBoats(vector<int>& people, int limit) {
+        sort(people.begin(), people.end());
+        int light = 0;
+        int heavy = people.size() - 1;
+        int result = 0;
+        while(light<=heavy)
+        {
+            if(people[light]+people[heavy]<=limit)
+            {
+                light++;
+                heavy--;
+                result++;
+            }
+            else
+            {
+                heavy--;
+                result++;
+            }
+        }
+        return result;
+    }
+};
+```
+
+
+
+
+
 #### 905.按奇偶排序数组
 
 给定一个非负整数数组 A，返回一个数组，在该数组中， A的所有偶数元素之后跟着所有奇数元素。可以返回满足此条件的任何数组作为答案。

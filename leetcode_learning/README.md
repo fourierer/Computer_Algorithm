@@ -988,6 +988,55 @@ private:
 
 
 
+#### 41.缺失的第一个正数
+
+给你一个未排序的整数数组 nums ，请你找出其中没有出现的最小的正整数。请你实现时间复杂度为 O(n) 并且只使用常数级别额外空间的解决方案。
+
+
+示例 1：
+
+输入：nums = [1,2,0]
+输出：3
+示例 2：
+
+输入：nums = [3,4,-1,1]
+输出：2
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+        //对于遍历到的数x=nums[i]，如果x属于[1,n]，则交换nums[i]和nums[x-1]
+        //如果交换后，nums[i]仍然属于[1,n]，则继续交换，直到nums[i]不属于[1,n]
+        //同时防止死循环，应当保证交换的两个数不相等，即nums[x-1]!=nums[i]
+        //如果都不符合上述条件，则跳出交换循环，遍历下一个数
+        for(int i=0;i<n;i++)
+        {
+            //int x = nums[i];
+            //如果x在[1,n]中且nums[x-1]!=x，则将x换到x-1位置上
+            while(nums[i]>0&&nums[i]<=n&&nums[nums[i]-1]!=nums[i])
+                swap(nums[nums[i]-1], nums[i]);
+        }
+        //从头遍历，看那个位置上的值nums[i]!=i+1，则是没有出现的最小正数
+        for(int i=0;i<n;i++)
+        {
+            if(nums[i]!=i+1)
+                return i+1;
+        }
+        return n+1;
+    }
+};
+
+```
+
+
+
 #### 42.接雨水
 
 给定 *n* 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
@@ -2139,6 +2188,42 @@ public:
     }
 };
 ```
+
+
+
+#### 100.相同的树
+
+给你两棵二叉树的根节点 `p` 和 `q` ，编写一个函数来检验这两棵树是否相同。如果两个树在结构上相同，并且节点具有相同的值，则认为它们是相同的。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+struct TreeNode{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode():val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x):val(x),left(nullptr),right(nullptr){}
+    TreeNode(int x,TreeNode* left, TreeNode* right):val(x),left(left),right(right){}
+};
+
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if(p==nullptr&&q==nullptr)
+            return true;
+        else if(p==nullptr||q==nullptr)
+            return false;
+        else
+            return (p->val==q->val)&&isSameTree(p->left, q->left)&&isSameTree(p->right, q->right);
+    }
+};
+
+```
+
+
 
 
 
@@ -8561,7 +8646,31 @@ public:
 ```
 
 ```c++
+#include<iostream>
+#include<vector>
 
+using namespace std;
+
+//差分数组：对于原数组nums[i]，差分数组nums1[i] = nums[i]-nums[i-1];nums1[0] = num[0];
+//对差分数组求前缀和数组即得到原数组即：nums[i] = num1[0]+nums1[1]+...+nums[i]
+//对于原数组nums某个区间[l,r]添加一个增量inc时，对应的差分数组nums1的改变是：nums1[l]+inc,nums1[r+1]-inc
+class Solution {
+public:
+    vector<int> corpFlightBookings(vector<vector<int>>& bookings, int n) {
+        vector<int> nums(n);//初始差分数组元素全0
+        for(auto book:bookings)
+        {
+            int inc = book[2];
+            nums[book[0]-1] += inc;//差分数组nums1[l]+inc
+            if(book[1]<n)
+                nums[book[1]] -= inc;//差分数组nums1[r+1]-inc
+        }
+        //对差分数组求前缀和得到原数组
+        for(int i=1;i<n;i++)
+            nums[i] += nums[i-1];
+        return nums;
+    }
+};
 ```
 
 

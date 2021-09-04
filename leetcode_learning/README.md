@@ -7528,6 +7528,84 @@ private:
 
 
 
+#### 863.二叉树中所有距离为K的结点
+
+给定一个二叉树（具有根结点 root）， 一个目标结点 target ，和一个整数值 K 。返回到目标结点 target 距离为 K 的所有结点的值的列表。 答案可以以任何顺序返回。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<map>
+
+using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+ 
+
+class Solution {
+public:
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        //从root出发DFS，记录每个结点的父结点
+        findParenets(root);
+
+        //从target出发DFS，寻找所有深度为k的结点
+        findAns(target, nullptr, 0, k);
+
+        return ans;
+    }
+
+private:
+    map<int, TreeNode*> parenets;
+    vector<int> ans;
+
+    void findParenets(TreeNode* node)
+    {
+        if(node->left!=nullptr)
+        {
+            parenets[node->left->val] = node;
+            findParenets(node->left);
+        }
+        if(node->right!=nullptr)
+        {
+            parenets[node->right->val] = node;
+            findParenets(node->right);
+        }
+    }
+
+    void findAns(TreeNode* node, TreeNode* from, int depth, int k)
+    {
+        //from表示当前遍历过程中节点node的上一个节点，depth表示当前节点node的深度
+        if(node==nullptr)
+            return;
+        if(depth==k)
+        {
+            ans.push_back(node->val);
+            return;
+        }
+
+        //防止向下遍历时又回到遍历过程中当前节点上一个节点
+        if(node->left!=from)
+            findAns(node->left, node, depth+1, k);
+        if(node->right!=from)
+            findAns(node->right, node, depth+1, k);
+        
+        //防止向上遍历时又回到遍历过程中当前节点上一个节点
+        if(parenets[node->val]!=from)
+            findAns(parenets[node->val], node, depth+1, k);
+    }
+};
+```
+
+
+
+
+
 #### 872.叶子相似的树
 
 请考虑一棵二叉树上所有的叶子，这些叶子的值按从左到右的顺序排列形成一个 *叶值序列* 。如果有两棵二叉树的叶值序列是相同，那么我们就认为它们是 叶相似 的。如果给定的两个根结点分别为 root1 和 root2 的树是叶相似的，则返回 true；否则返回 false 。

@@ -7233,6 +7233,39 @@ public:
 
 
 
+#### 704.二分查找
+
+给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target  ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std
+
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int size = nums.size();
+        int left = 0;
+        int right = size - 1;
+        while(left<right)
+        {
+            int mid = left + (right-left)/2;
+            if(nums[mid]==target)
+                return mid;
+            else if(nums[mid]<target)
+                left = mid + 1;
+            else
+                right = mid;
+        }
+        return nums[left]==target?left:-1;
+    }
+};
+```
+
+
+
 #### 767.重构字符串
 
 给定一个字符串`S`，检查是否能重新排布其中的字母，使得两相邻的字符不同。若可行，输出任意可行的结果。若不可行，返回空字符串。

@@ -9017,6 +9017,41 @@ int main()
 
 
 
+#### 1221.分割平衡字符串
+
+在一个 平衡字符串 中，'L' 和 'R' 字符的数量是相同的。给你一个平衡字符串 s，请你将它分割成尽可能多的平衡字符串。
+
+注意：分割得到的每个字符串都必须是平衡字符串。返回可以通过分割得到的平衡字符串的 最大数量 。
+
+```c++
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+class Solution {
+public:
+    int balancedStringSplit(string s) {
+        int length = s.size();
+        int L = 0;
+        int R = 0;
+        int result = 0;
+        for(int i=0;i<length;i++)
+        {
+            if(s[i]=='L')
+                L++;
+            if(s[i]=='R')
+                R++;
+            if(L==R)
+                result++;
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### 1269.停在原地的方案数
 
 有一个长度为 arrLen 的数组，开始有一个指针在索引 0 处。每一步操作中，你可以将指针向左或向右移动 1 步，或者停在原地（指针不能被移动到数组范围外）。给你两个整数 steps 和 arrLen ，请你计算并返回：在恰好执行 steps 次操作以后，指针仍然指向索引 0 处的方案数。由于答案可能会很大，请返回方案数 模 10^9 + 7 后的结果。

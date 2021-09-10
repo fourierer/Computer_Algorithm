@@ -842,6 +842,40 @@ int main()
 
 
 
+利用C++中的堆（优先队列）来求解
+
+```c++
+class Solution {
+public:
+    vector<int> smallestK(vector<int>& arr, int k) {
+        vector<int> vec(k, 0);
+        if (k == 0) { // 排除 0 的情况
+            return vec;
+        }
+        priority_queue<int> Q;
+        for (int i = 0; i < k; ++i) {
+            Q.push(arr[i]);//按照优先级最高（值最大）排序，优先级最高的在堆顶，称为大顶堆
+        }
+        for (int i = k; i < (int)arr.size(); ++i) {
+            if (Q.top() > arr[i]) {
+                Q.pop();
+                Q.push(arr[i]);//插入删除，时间复杂度为O(logK)
+            }
+        }
+        for (int i = 0; i < k; ++i) {
+            vec[i] = Q.top();
+            Q.pop();
+        }
+        return vec;
+    }
+};
+
+//空间复杂度：使用了一个优先队列，O(K)
+//时间复杂度：优先队列中的插入删除为O(logK)，最坏情况，剩余n-K个元素都需要插入，即O(nlogK)
+```
+
+
+
 ### 三、c++中字符串，字符和int的相互转换
 
 #### 1.char和int的转换

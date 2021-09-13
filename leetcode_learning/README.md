@@ -6048,6 +6048,55 @@ public:
 
 
 
+#### 447.回旋镖的数量
+
+给定平面上 n 对 互不相同 的点 points ，其中 points[i] = [xi, yi] 。回旋镖 是由点 (i, j, k) 表示的元组 ，其中 i 和 j 之间的距离和 i 和 k 之间的距离相等（需要考虑元组的顺序）。返回平面上所有回旋镖的数量。
+
+示例 1：
+
+```c++
+输入：points = [[0,0],[1,0],[2,0]]
+输出：2
+解释：两个回旋镖为 [[1,0],[0,0],[2,0]] 和 [[1,0],[2,0],[0,0]]
+```
+
+```c++
+#include<iostream>
+#include<map>
+
+using namespace std;
+
+class Solution {
+public:
+    int numberOfBoomerangs(vector<vector<int>>& points) {
+        int result = 0;
+        //遍历作为回旋镖顶点的点
+        for(auto p:points)
+        {
+            map<int, int> m;
+            for(auto q:points)
+            {
+                int dis = (p[0]-q[0])*(p[0]-q[0]) + (p[1]-q[1])*(p[1]-q[1]);
+                m[dis]++;
+            }
+            //对相同距离的点进行排列组合计算回旋镖数量
+            for(auto it=m.begin();it!=m.end();it++)
+                result += it->second*(it->second-1);
+            //或者
+            // for(auto [_, x]:m)
+            //     result += x*(x-1);
+        }
+        return result;
+    }
+};
+```
+
+
+
+
+
+
+
 #### 452.用最少数量的箭引爆气球
 
 在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。一支弓箭可以沿着 x 轴从不同点完全垂直地射出。在坐标 $x$ 处射出一支箭，若有一个气球的直径的开始和结束坐标为 $x_{start}$，$x_{end}$， 且满足  $x_{start} ≤ x ≤ x_{end}$，则该气球会被引爆。可以射出的弓箭的数量没有限制。 弓箭一旦被射出之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。

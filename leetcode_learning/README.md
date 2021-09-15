@@ -3472,6 +3472,40 @@ public:
 
 
 
+#### 162.寻找峰值
+
+峰值元素是指其值严格大于左右相邻值的元素。给你一个整数数组 nums，找到峰值元素并返回其索引。数组可能包含多个峰值，在这种情况下，返回 任何一个峰值 所在位置即可。
+
+你可以假设 nums[-1] = nums[n] = -∞ 。你必须实现时间复杂度为 O(log n) 的算法来解决此问题。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        int left = 0;
+        int right = nums.size()-1;
+        while(left<right)
+        {
+            int mid = left+(right-left)/2;
+            if(nums[mid]<nums[mid+1])
+                left = mid+1;//向上爬坡，高处必有峰值
+            else
+                right = mid;//向上爬坡，高处必有峰值
+        }
+        return left;
+    }
+};
+```
+
+
+
+
+
 #### 164.最大间距
 
 给定一个无序的数组，找出数组在排序之后，相邻元素之间最大的差值。如果数组元素个数小于 2，则返回 0。
@@ -4595,6 +4629,46 @@ int main()
     return 0;
 }
 ```
+
+
+
+#### 229.滑动窗口最大值
+
+给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。返回滑动窗口中的最大值。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        int n = nums.size();
+        priority_queue<vector<int>> q;//优先队列以vector第一个元素来排序优先级，leetcode官方使用的是pair<int, int>
+        vector<int> result;
+        //将前k个元素放入优先队列，包括他们的索引，索引是为了后续删除元素
+        for(int i=0;i<k;i++)
+            q.push({nums[i], i});
+        //取队首元素放入result中
+        result.push_back(q.top()[0]);
+        //遍历剩余元素
+        for(int i=k;i<n;i++)
+        {
+            q.push({nums[i], i});
+            //去除不在滑动窗口中的队首元素
+            while(q.top()[1]<=i-k)
+                q.pop();
+            result.push_back(q.top()[0]);
+        }
+        return result;
+    }
+};
+```
+
+
 
 
 
@@ -6090,10 +6164,6 @@ public:
     }
 };
 ```
-
-
-
-
 
 
 

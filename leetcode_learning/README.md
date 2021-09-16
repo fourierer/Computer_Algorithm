@@ -10007,6 +10007,41 @@ public:
 
 
 
+#### 1785.构成特定和需要添加的最少元素
+
+给你一个整数数组 nums ，和两个整数 limit 与 goal 。数组 nums 有一条重要属性：abs(nums[i]) <= limit 。返回使数组元素总和等于 goal 所需要向数组中添加的 最少元素数量 ，添加元素 不应改变 数组中 abs(nums[i]) <= limit 这一属性。
+
+示例1：
+
+```c++
+输入：nums = [1,-1,1], limit = 3, goal = -4
+输出：2
+解释：可以将 -2 和 -3 添加到数组中，数组的元素总和变为 1 - 1 + 1 - 2 - 3 = -4 。
+```
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int minElements(vector<int>& nums, int limit, int goal) {
+        double sum = 0;
+        for(int i=0;i<nums.size();i++)
+            sum += nums[i];
+        sum = fabs(sum - goal);
+        return int((sum+limit-1)/limit);//取sum/limit向上取整的数
+        //return ceil(temp / (double)limit);//使用ceil函数向上取整
+    }
+};
+```
+
+
+
+
+
 #### 1818.绝对差值和
 
 给你两个正整数数组 nums1 和 nums2 ，数组的长度都是 n 。数组 nums1 和 nums2 的 绝对差值和 定义为所有 |nums1[i] - nums2[i]|（0 <= i < n）的 总和（下标从 0 开始）。

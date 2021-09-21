@@ -1509,6 +1509,42 @@ public:
 
 
 
+#### 58.最后一个单词的长度
+
+给你一个字符串 s，由若干单词组成，单词前后用一些空格字符隔开。返回字符串中最后一个单词的长度。单词 是指仅由字母组成、不包含任何空格字符的最大子字符串。
+
+示例 1：
+
+```c+=
+输入：s = "Hello World"
+输出：5
+```
+
+```c++
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        int index = s.size() - 1;
+        while(s[index]==' ')
+            index--;
+        int result = 0;
+        while(index>=0&&s[index]!=' ')
+        {
+            index--;
+            result++;
+        }
+        return result;
+    }
+};
+```
+
+
+
 #### 61.旋转链表
 
 给你一个链表的头节点 `head` ，旋转链表，将链表每个节点向右移动 `k` 个位置。

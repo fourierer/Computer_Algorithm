@@ -7635,6 +7635,67 @@ public:
 
 
 
+#### 725.分割链表
+
+给你一个头结点为 head 的单链表和一个整数 k ，请你设计一个算法将链表分隔为 k 个连续的部分。每部分的长度应该尽可能的相等：任意两部分的长度差距不能超过 1 。
+
+这可能会导致有些部分为 null 。这 k 个部分应该按照在链表中出现的顺序排列，并且排在前面的部分的长度应该大于或等于排在后面的长度。返回一个由上述 k 部分组成的数组。
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+struct ListNode{
+    int val;
+    ListNode* next;
+    ListNode():val(0),next(nullptr){}
+    ListNode(int x):val(x),next(nullptr){}
+    ListNode(int x, ListNode* next):val(x),next(next){}
+};
+
+
+class Solution {
+public:
+    vector<ListNode*> splitListToParts(ListNode* head, int k) {
+        int n = 0;
+        ListNode* temp = head;
+        //计算链表长度
+        while(temp!=nullptr)
+        {
+            n++;
+            temp = temp->next;
+        }
+        //计算商和余数
+        //则在分隔成的k个部分中，前remainder个部分的长度各为quotient+1其余每个部分的长度各为quotient
+        int quotient = n/k;
+        int remainder = n%k;
+
+        vector<ListNode*> parts(k, nullptr);
+        ListNode* curr = head;
+        for(int i=0;i<k&&curr!=nullptr;i++)
+        {
+            parts[i] = curr;
+            int partSize = quotient + (i<remainder?1:0);//前remainder个部分的长度各为quotient+1其余每个部分的长度各为quotient
+            for(int j=1;j<partSize;j++)
+            {
+                curr = curr->next;
+            }
+            //第i个分割的链表，断开curr和curr->next;
+            ListNode* next = curr->next;
+            curr->next = nullptr;
+            curr = next;
+        }
+        return parts;
+    }
+};
+```
+
+
+
+
+
 #### 767.重构字符串
 
 给定一个字符串`S`，检查是否能重新排布其中的字母，使得两相邻的字符不同。若可行，输出任意可行的结果。若不可行，返回空字符串。

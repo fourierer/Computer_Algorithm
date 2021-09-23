@@ -9173,6 +9173,49 @@ public:
 
 
 
+#### 1046.最后一块石头的重量
+
+有一堆石头，每块石头的重量都是正整数。每一回合，从中选出两块 最重的 石头，然后将它们一起粉碎。假设石头的重量分别为 x 和 y，且 x <= y。那么粉碎的可能结果如下：
+
+```
+如果 x == y，那么两块石头都会被完全粉碎；
+如果 x != y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。
+```
+
+最后，最多只会剩下一块石头。返回此石头的重量。如果没有石头剩下，就返回 0。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+class Solution {
+public:
+    int lastStoneWeight(vector<int>& stones) {
+        //创建优先队列，即大顶堆
+        priority_queue<int> q;
+        for(int i=0;i<stones.size();i++)
+            q.push(stones[i]);
+        
+        //模拟粉碎过程
+        while(q.size()>1)
+        {
+            int a = q.top();
+            q.pop();
+            int b = q.top();
+            q.pop();
+            if(a>b)
+                q.push(a-b);
+        }
+        return q.size()==1?q.top():0;
+    }
+};
+```
+
+
+
 #### 1074.元素和为目标值的子矩阵数量
 
 给出矩阵 matrix 和目标值 target，返回元素总和等于目标值的非空子矩阵的数量。子矩阵 x1, y1, x2, y2 是满足 x1 <= x <= x2 且 y1 <= y <= y2 的所有单元 matrix[x][y] 的集合。如果 (x1, y1, x2, y2) 和 (x1', y1', x2', y2') 两个子矩阵中部分坐标不同（如：x1 != x1'），那么这两个子矩阵也不同。

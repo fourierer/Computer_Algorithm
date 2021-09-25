@@ -7151,6 +7151,56 @@ public:
 
 
 
+#### 583.两个字符串的删除操作
+
+给定两个单词 word1 和 word2，找到使得 word1 和 word2 相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
+
+示例：
+
+```
+输入: "sea", "eat"
+输出: 2
+解释: 第一步将"sea"变为"ea"，第二步将"eat"变为"ea"
+```
+
+```c++
+#include<iostream>
+#include<vector>
+#include<string>
+
+using namespace std;
+
+//求最长子序列的长度，两个字符串到最长子序列要删除的字符数之和就是最少操作步数
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int m = word1.size();
+        int n = word2.size();
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+        
+        for(int i=1;i<m+1;i++)
+        {
+            char w1 = word1[i-1];
+            for(int j=1;j<n+1;j++)
+            {
+                char w2 = word2[j-1];
+                if(w1==w2)
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                else
+                    dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+
+        int loss = m - dp[m][n] + n - dp[m][n];
+        return loss;
+    }
+};
+```
+
+
+
+
+
 #### 611.有效三角形的个数
 
 给定一个包含非负整数的数组，你的任务是统计其中可以组成三角形三条边的三元组个数。

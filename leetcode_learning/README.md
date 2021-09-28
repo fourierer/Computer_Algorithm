@@ -6287,6 +6287,54 @@ public:
 
 
 
+#### 437.路径总和III
+
+给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+struct TreeNode{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode():val(0),left(nullptr),right(nullptr){}
+    TreeNode(int x):val(x), left(nullptr), right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right):val(x), left(left), right(right){}
+};
+
+class Solution {
+public:
+    int pathSum(TreeNode* root, int targetSum) {
+        if(!root)
+            return 0;
+        //遍历root，同时计算以root为起点来计算等于路径和等于targetSum的路径数
+        int ret = rootSum(root, targetSum);
+        ret += pathSum(root->left, targetSum);
+        ret += pathSum(root->right, targetSum);
+        return ret;
+    }
+private:
+    //以root为起点来计算等于路径和等于targetSum的路径数
+    int rootSum(TreeNode* root, int targetSum)
+    {
+        if(!root)
+            return 0;
+        
+        int ret = 0;
+        if(root->val==targetSum)
+            ret++;
+        ret += rootSum(root->left, targetSum - root->val);
+        ret += rootSum(root->right, targetSum - root->val);
+        return ret;
+    }
+};
+```
+
+
+
 #### 447.回旋镖的数量
 
 给定平面上 n 对 互不相同 的点 points ，其中 points[i] = [xi, yi] 。回旋镖 是由点 (i, j, k) 表示的元组 ，其中 i 和 j 之间的距离和 i 和 k 之间的距离相等（需要考虑元组的顺序）。返回平面上所有回旋镖的数量。

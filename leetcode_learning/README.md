@@ -4602,6 +4602,51 @@ private:
 
 
 
+#### 221.最大正方形
+
+在一个由 `'0'` 和 `'1'` 组成的二维矩阵内，找到只包含 `'1'` 的最大正方形，并返回其面积。
+
+![221_1](E:\donkey\Documents\Computer_Algorithm\img\leetcode\221_1.png)
+
+![221_2](E:\donkey\Documents\Computer_Algorithm\img\leetcode\221_2.png)
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//dp[i][j]表示以(i,j)为右下角的正方形的最大边长
+//dp[i][j]=min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int m = matrix.size();
+        int n = matrix[0].size();
+        vector<vector<int>> dp(m, vector<int>(n));
+        int result = 0;
+        for(int i = 0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(i==0||j==0)
+                    dp[i][j] = matrix[i][j] - '0';
+                else if(matrix[i][j]=='0')
+                    dp[i][j] = 0;
+                else
+                    dp[i][j] = min(min(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1]) + 1;
+                result = max(result, dp[i][j]);
+            }
+        }
+        return result*result;
+    }
+};
+```
+
+
+
+
+
 #### 222.完全二叉树的节点个数
 
 给出一个**完全二叉树**，求出该树的节点个数。完全二叉树的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。若最底层为第 $h$ 层，则该层包含 $1-2^h$ 个节点。
@@ -9706,6 +9751,55 @@ public:
 
 
 ```
+
+
+
+#### 1277.统计全为1的正方形子矩阵
+
+给你一个 `m * n` 的矩阵，矩阵中的元素不是 `0` 就是 `1`，请你统计并返回其中完全由 `1` 组成的 **正方形** 子矩阵的个数。
+
+解体思路和221最大正方形一样。
+
+![221_1](E:\donkey\Documents\Computer_Algorithm\img\leetcode\221_1.png)
+
+![221_2](E:\donkey\Documents\Computer_Algorithm\img\leetcode\221_2.png)
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//dp[i][j]表示以(i,j)为右下角的正方形的最大边长，同时dp[i][j]=x也表示以(i,j)为右下角的正方形的数目为x，即变成为1，2，...，x的正方形各一个
+//dp[i][j]=min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1
+//最终结果是所有dp[i][j]之和
+class Solution {
+public:
+    int countSquares(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = matrix[0].size();
+        vector<vector<int>> dp(m, vector<int>(n));
+        int result = 0;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(i==0||j==0)
+                    dp[i][j] = matrix[i][j];
+                else if(matrix[i][j]==0)
+                    dp[i][j] = 0;
+                else
+                    dp[i][j] = min(min(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1]) + 1;
+                
+                result += dp[i][j];
+            }
+        }
+        return result;
+    }
+};
+```
+
+
 
 
 

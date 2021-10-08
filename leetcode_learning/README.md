@@ -110,7 +110,7 @@ int main()
 
 
 
-#### 3.无重复字符的最长字串
+#### 3.无重复字符的最长子串
 
 给定一个字符串 `s` ，请你找出其中不含有重复字符的 **最长子串** 的长度。
 
@@ -161,7 +161,7 @@ public:
         int n = s.size();
         // 右指针，初始值为 0，相当于我们在字符串的左边界的左侧，还没有开始移动
         int rk = 0, ans = 0;
-        // 枚举左指针的位置，初始值隐性地表示为 -1
+        // 枚举左指针的位置，初始值为0
         for (int i = 0; i < n; ++i) {
             if (i != 0) {
                 // 左指针向右移动一格，移除一个字符
@@ -3666,6 +3666,58 @@ public:
     }
 };
 ```
+
+
+
+#### 187.重复的DNA序列
+
+所有 DNA 都由一系列缩写为 'A'，'C'，'G' 和 'T' 的核苷酸组成，例如："ACGAATTCCG"。在研究 DNA 时，识别 DNA 中的重复序列有时会对研究非常有帮助。编写一个函数来找出所有目标子串，目标子串的长度为 10，且在 DNA 字符串 s 中出现次数超过一次。
+
+示例 1：
+
+```
+输入：s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+输出：["AAAAACCCCC","CCCCCAAAAA"]
+```
+
+示例 2：
+
+```
+输入：s = "AAAAAAAAAAAAA"
+输出：["AAAAAAAAAA"]
+```
+
+```c++
+#incldue<iostream>
+#include<vector>
+#include<map>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<string> findRepeatedDnaSequences(string s) {
+        vector<string> result;
+        int L = 10;
+        if(s.size()<L)
+            return result;
+        map<string, int> str_count;
+        for(int i=0;i<=s.size()-L;i++)
+        {
+            string sub = s.substr(i, L);
+            str_count[sub]++;
+            //只考虑出现两次的字串，防止重复计数
+            if(str_count[sub]==2)
+                result.push_back(sub);
+        }
+        return result;
+    }
+};
+```
+
+
+
+
 
 
 

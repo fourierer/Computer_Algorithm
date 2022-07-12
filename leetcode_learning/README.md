@@ -501,6 +501,68 @@ private:
 
 
 
+#### 14.最长公共前缀
+
+编写一个函数来查找字符串数组中的最长公共前缀。
+
+如果不存在公共前缀，返回空字符串 `""`。
+
+ 
+
+**示例 1：**
+
+```
+输入：strs = ["flower","flow","flight"]
+输出："fl"
+```
+
+**示例 2：**
+
+```
+输入：strs = ["dog","racecar","car"]
+输出：""
+解释：输入不存在公共前缀。
+```
+
+```c++
+#include<string>
+#include<vector>
+
+using namespace std;
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        int size = strs.size();
+        if(size==0)
+            return "";
+        if(size==1)
+            return strs[0];
+        string str = strs[0];
+        for(int i=1;i<size;i++)
+            str = longestCommonPrefix_for_two(str, strs[i]);
+        return str;
+    }
+private:
+    string longestCommonPrefix_for_two(string str1, string str2)
+    {
+        int size1 = str1.size();
+        int size2 = str2.size();
+        int size = size1<size2?size1:size2;
+        for(int i=0;i<size;i++)
+        {
+            if(str1[i]!=str2[i])
+                return str1.substr(0, i);
+        }
+        return size1<size2?str1:str2;
+    }
+};
+```
+
+
+
+
+
 #### 19.删除链表的倒数第N个节点
 
 给定一个链表，删除链表的倒数第 *n* 个节点，并且返回链表的头结点。
@@ -9807,6 +9869,143 @@ public:
     }
 };
 ```
+
+
+
+#### 1252.奇数值单元格的数目
+
+给你一个 `m x n` 的矩阵，最开始的时候，每个单元格中的值都是 `0`。
+
+另有一个二维索引数组 `indices`，`indices[i] = [ri, ci]` 指向矩阵中的某个位置，其中 `ri` 和 `ci` 分别表示指定的行和列（**从 `0` 开始编号**）。
+
+对 `indices[i]` 所指向的每个位置，应同时执行下述增量操作：
+
+1. `ri` 行上的所有单元格，加 `1` 。
+2. `ci` 列上的所有单元格，加 `1` 。
+
+给你 `m`、`n` 和 `indices` 。请你在执行完所有 `indices` 指定的增量操作后，返回矩阵中 **奇数值单元格** 的数目。
+
+**示例 1：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/11/06/e1.png)
+
+```
+输入：m = 2, n = 3, indices = [[0,1],[1,1]]
+输出：6
+解释：最开始的矩阵是 [[0,0,0],[0,0,0]]。
+第一次增量操作后得到 [[1,2,1],[0,1,0]]。
+最后的矩阵是 [[1,3,1],[1,3,1]]，里面有 6 个奇数。
+```
+
+```c++
+/*
+ * @lc app=leetcode.cn id=1252 lang=cpp
+ *
+ * [1252] 奇数值单元格的数目
+ */
+
+// @lc code=start
+
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//方法一：直接模拟
+// class Solution {
+// public:
+//     int oddCells(int m, int n, vector<vector<int>>& indices) {
+//         int res = 0;
+//         vector<vector<int>> matrix(m, vector<int>(n));
+//         for (int I=0;I<indices.size();I++) {
+//             vector<int> index = indices[I];
+//             for (int i = 0; i < n; i++) {
+//                 matrix[index[0]][i]++;
+//             }
+//             for (int i = 0; i < m; i++) {
+//                 matrix[i][index[1]]++;
+//             }
+//         }
+//         for (int i = 0; i < m; i++) {
+//             for (int j = 0; j < n; j++) {
+//                 if (matrix[i][j] & 1) {
+//                     res++;
+//                 }
+//             }
+//         }
+//         return res;
+//     }
+// };
+
+
+//方法二
+//使用两个数组记录每一行和每一列增加的次数，如rows[i]表示第i行增加的次数
+// class Solution {
+// public:
+//     int oddCells(int m, int n, vector<vector<int>>& indices) {
+//         int result = 0;
+//         vector<int> rows(m);
+//         vector<int> cols(n);
+//         for(int i=0;i<indices.size();i++)
+//         {
+//             vector<int> index = indices[i];
+//             rows[index[0]]++;
+//             cols[index[1]]++;
+//         }
+//         //遍历整个矩阵
+//         for(int i=0;i<m;i++)
+//         {
+//             for(int j=0;j<n;j++)
+//             {
+//                 if((rows[i]+cols[j])%2==1)
+//                     result++;
+//             }
+//         }
+//         return result;
+//     }
+// };
+
+
+//方法三
+//进一步考虑数组rows和cols，最终矩阵matrix[i][j]为奇数的充分必要条件是rows[i]
+//和cols[j]中必定一个为奇数一个为偶数。
+//假设rows数组中有oddx个奇数，cols数组有oddy个奇数，
+//则rows[i]为奇数的那些行对应的列为偶数情况下，才可以使得matrix[i][j]为奇数，即有oddx*(n-oddy)个奇数；
+//同理，则rows[i]为偶数的那些行对应的列为奇数情况下，才可以使得matrix[i][j]为奇数，即有oddy*(m-oddx)个奇数；
+class Solution {
+public:
+    int oddCells(int m, int n, vector<vector<int>>& indices) {
+        int result = 0;
+        vector<int> rows(m);
+        vector<int> cols(n);
+        for(int i=0;i<indices.size();i++)
+        {
+            vector<int> index = indices[i];
+            rows[index[0]]++;
+            cols[index[1]]++;
+        }
+        //计算oddx和oddy
+        int oddx = 0;
+        int oddy = 0;
+        for(int i=0;i<m;i++)
+        {
+            if(rows[i]%2==1)
+                oddx++;
+        }
+        for(int i=0;i<n;i++)
+        {
+            if(cols[i]%2==1)
+                oddy++;
+        }
+
+        return oddx*(n-oddy)+oddy*(m-oddx);
+    }
+};
+
+// @lc code=end
+```
+
+
 
 
 

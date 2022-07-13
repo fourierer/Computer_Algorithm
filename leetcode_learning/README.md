@@ -8041,6 +8041,85 @@ public:
 
 
 
+#### 735.行星碰撞
+
+给定一个整数数组 asteroids，表示在同一行的行星。
+
+对于数组中的每一个元素，其绝对值表示行星的大小，正负表示行星的移动方向（正表示向右移动，负表示向左移动）。每一颗行星以相同的速度移动。
+
+找出碰撞后剩下的所有行星。碰撞规则：两个行星相互碰撞，较小的行星会爆炸。如果两颗行星大小相同，则两颗行星都会爆炸。两颗移动方向相同的行星，永远不会发生碰撞。
+
+示例 1：
+
+输入：asteroids = [5,10,-5]
+输出：[5,10]
+解释：10 和 -5 碰撞后只剩下 10 。 5 和 10 永远不会发生碰撞。
+示例 2：
+
+输入：asteroids = [8,-8]
+输出：[]
+解释：8 和 -8 碰撞后，两者都发生爆炸。
+示例 3：
+
+输入：asteroids = [10,2,-5]
+输出：[10]
+解释：2 和 -5 发生碰撞后剩下 -5 。10 和 -5 发生碰撞后剩下 10 。
+
+```c++
+#include<iostream>
+#include<vector>
+#include<stack>
+
+using namespace std;
+
+// @lc code=start
+class Solution {
+public:
+    vector<int> asteroidCollision(vector<int>& asteroids) {
+        stack<int> stk;
+        stk.push(asteroids[0]);
+        for(int i=1;i<asteroids.size();i++)
+        {
+            if(stk.empty())
+            {
+                stk.push(asteroids[i]);
+            }
+            else
+            {
+                if((stk.top()*asteroids[i]>0)||(stk.top()<0&&asteroids[i]>0))
+                    //当前行星和栈中行星同方向 或者 栈中行星往左，当前行星往右
+                    stk.push(asteroids[i]);
+                else//当前行星和栈中行星不同向
+                {
+                    if(abs(stk.top())==abs(asteroids[i]))
+                    {    
+                        stk.pop();
+                        continue;
+                    }
+                    else if(abs(stk.top())>abs(asteroids[i]))
+                        continue;
+                    else
+                    {
+                        stk.pop();
+                        i = i-1;//保持i不变，执行结束i会自动加1
+                    }
+                }
+            }
+        }
+
+        //将栈转换为数组
+        vector<int> result;
+        while(!stk.empty())
+        {
+            result.push_back(stk.top());
+            stk.pop();
+        }
+        reverse(result.begin(),result.end());//反转数组
+        return result;
+    }
+};
+```
+
 
 
 #### 767.重构字符串

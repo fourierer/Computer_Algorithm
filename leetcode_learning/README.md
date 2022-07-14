@@ -2422,6 +2422,132 @@ public:
 
 
 
+#### 97.交错字符串
+
+给定三个字符串 s1、s2、s3，请你帮忙验证 s3 是否是由 s1 和 s2 交错 组成的。
+
+两个字符串 s 和 t 交错 的定义与过程如下，其中每个字符串都会被分割成若干 非空 子字符串：
+
+s = s1 + s2 + ... + sn
+t = t1 + t2 + ... + tm
+|n - m| <= 1
+交错 是 s1 + t1 + s2 + t2 + s3 + t3 + ... 或者 t1 + s1 + t2 + s2 + t3 + s3 + ...
+注意：a + b 意味着字符串 a 和 b 连接。
+
+示例 1：
+
+
+输入：s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
+输出：true
+示例 2：
+
+输入：s1 = "aabcc", s2 = "dbbca", s3 = "aadbbbaccc"
+输出：false
+示例 3：
+
+输入：s1 = "", s2 = "", s3 = ""
+输出：true
+
+```c++
+// @lc code=start
+#include<iostream>
+#include<string>
+#include<vector>
+
+using namespace std;
+
+
+//使用动态规划求解：dp[i][j]表示s1的前i个字符和s2的前j个字符能否交错组成s3的前i+j个字符
+//dp[0][0] = 1
+//当s1[i]==s3[i+j]时，dp[i][j] = dp[i-1][j];
+//当s2[j]==s3[i+j]时，dp[i][j] = dp[i][j-1];
+//故dp[i][j]=dp[i][j]|dp[i-1][j]|dp[i][j-1];
+// class Solution {
+// public:
+//     bool isInterleave(string s1, string s2, string s3) {
+//         int size1 = s1.size();
+//         int size2 = s2.size();
+//         int size3 = s3.size();
+//         if(size1+size2!=size3)
+//             return false;
+//         // if(size1==0&&size2==0)
+//         //     return true;
+//         // if(size1==0)
+//         //     return s2==s3;
+//         // if(size2==0)
+//         //     return s1==s3;
+//         vector<vector<int>> dp(size1+1, vector<int>(size2+1, 0));
+//         dp[0][0] = 1;
+//         for(int i=0;i<=size1;i++)
+//         {
+//             for(int j=0;j<=size2;j++)
+//             {
+//                 if(i>0)
+//                     dp[i][j] |= dp[i-1][j]&&(s1[i-1]==s3[i+j-1]);
+//                 if(j>0)
+//                     dp[i][j] |= dp[i][j-1]&&(s2[j-1]==s3[i+j-1]);
+//             }
+//         }
+//         return dp[size1][size2];
+
+//     }
+// };
+
+
+//考虑到该递推公式每次只涉及到两行或两列，故可以使用一个一维数组来进行递推
+// class Solution {
+// public:
+//     bool isInterleave(string s1, string s2, string s3) {
+//         int size1 = s1.size();
+//         int size2 = s2.size();
+//         int size3 = s3.size();
+//         if(size1+size2!=size3)
+//             return false;
+//         vector<int> dp_row(size2+1, 0);//表示原始二维数组dp每一行的状态
+//         dp_row[0] = 1;
+//         for(int i=0;i<=size1;i++)
+//             for(int j=0;j<=size2;j++)
+//             {
+//                 if(i>0)
+//                     dp_row[j] &= s1[i-1]==s3[i+j-1];//首先利用上一行的dp_row[j]更新状态
+//                 if(j>0)
+//                     dp_row[j] |= dp_row[j-1]&&(s2[j-1]==s3[i+j-1]);//再利用当前行的dp_row[j-1]更新状态    
+//             }
+//         return dp_row[size2];
+//     }
+// };
+
+
+//同样可以按照列状态来递推
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int size1 = s1.size();
+        int size2 = s2.size();
+        int size3 = s3.size();
+        if(size1+size2!=size3)
+            return false;
+        vector<int> dp_col(size1+1, 0);//表示原始二维数组dp每一列的状态
+        dp_col[0] = 1;
+        for(int j=0;j<=size2;j++)
+            for(int i=0;i<=size1;i++)
+            {
+                if(j>0)
+                    dp_col[i] &= s2[j-1]==s3[i+j-1];//首先利用前一列的dp_col[i]更新状态
+                if(i>0)
+                    dp_col[i] |= dp_col[i-1]&&(s1[i-1]==s3[i+j-1]);//再利用当前列的dp_col[i-1]更新状态    
+            }
+        return dp_col[size1];
+    }
+};
+
+// @lc code=end
+```
+
+
+
+
+
 #### 100.相同的树
 
 给你两棵二叉树的根节点 `p` 和 `q` ，编写一个函数来检验这两棵树是否相同。如果两个树在结构上相同，并且节点具有相同的值，则认为它们是相同的。

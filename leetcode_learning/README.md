@@ -7685,6 +7685,82 @@ public:
 
 
 
+#### 565.数组嵌套
+
+索引从`0`开始长度为`N`的数组`A`，包含`0`到`N - 1`的所有整数。找到最大的集合`S`并返回其大小，其中 `S[i] = {A[i], A[A[i]], A[A[A[i]]], ... }`且遵守以下的规则。
+
+假设选择索引为`i`的元素`A[i]`为`S`的第一个元素，`S`的下一个元素应该是`A[A[i]]`，之后是`A[A[A[i]]]...` 以此类推，不断添加直到`S`出现重复的元素。
+
+**示例 1:**
+
+```
+输入: A = [5,4,0,3,1,6,2]
+输出: 4
+解释: 
+A[0] = 5, A[1] = 4, A[2] = 0, A[3] = 3, A[4] = 1, A[5] = 6, A[6] = 2.
+
+其中一种最长的 S[K]:
+S[0] = {A[0], A[5], A[6], A[2]} = {5, 6, 2, 0}
+```
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//从i向nums[i]连线，可以得到一个有向图；
+//由于nums中元素不重复，故有向图由一个环或多个环组成；
+//可以遍历nums，使用一个标记数组，找到节点个数最大的环；
+// class Solution {
+// public:
+//     int arrayNesting(vector<int>& nums) {
+//         int result = 0;
+//         int n = nums.size();
+//         vector<int> flag(n);
+//         for(int i=0;i<n;i++)
+//         {
+//             int count_tmp = 0;
+//             while(flag[i]==0)
+//             {
+//                 flag[i] = 1;//i节点已经访问
+//                 count_tmp++;//当前环中节点数加1
+//                 i = nums[i];//指向下一个节点
+//             }
+//             result = max(result, count_tmp);
+//         }
+
+//         return result;
+//     }
+// };
+
+//优化空间，对原数组进行原地标记，节省标记数组的空间
+//由于数组中的数都是小于n的，可以使用n来标记已经遍历过的节点
+class Solution {
+public:
+    int arrayNesting(vector<int>& nums) {
+        int result = 0;
+        int n = nums.size();
+        for(int i=0;i<n;i++)
+        {
+            int count_tmp = 0;
+            while(nums[i]<n)
+            {
+                int num = nums[i];//标记之前先保存数值
+                nums[i] = n;//标记
+                count_tmp++;
+                i = num;
+            }
+            result = max(result, count_tmp);
+        }
+
+        return result;
+    }
+};
+```
+
+
+
 
 
 #### 576.出界的路径数

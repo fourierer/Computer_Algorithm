@@ -24,6 +24,11 @@ class Solution(object):
                 if dp[i][j] and ((k+1)>len(result_str)):
                     result_str = s[i:j+1]
         return result_str
+    
+    def lengthOfLongestSubsequence(self, s: str) -> int:
+        """无重复字符的最长子序列：子序列不要求连续，
+        只需挑选所有不重复字符即可，答案即为不同字符数"""
+        return len(set(s))
 
                     
 

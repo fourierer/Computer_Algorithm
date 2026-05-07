@@ -27,6 +27,19 @@ class Solution(object):
         else:
             return 0
 
+    # 未验证，仅提供思路
+    def reverse_simple(self, x):
+        """
+        :type x: int
+        :rtype: int
+        """
+        if x >= 0:
+            x = int(str(x)[::-1])
+        else:
+            x = -int(str(-x)[::-1])
+    
+        return x if x >= -2**31 and x <= 2**31 - 1 else 0
+
 
 x = 1001
 s = Solution()

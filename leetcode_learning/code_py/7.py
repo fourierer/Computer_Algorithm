@@ -6,6 +6,7 @@ class Solution(object):
         """
         sum = 0
         temp = 0
+        # 必须要分开正负讨论，因为余数一定为正，比如-123%10=7，-123//10=-13
         if x>0:
             while(x!=0):
                 temp = x % 10
@@ -26,6 +27,24 @@ class Solution(object):
             return sum_minus
         else:
             return 0
+
+    # 未验证，仅提供思路
+    def reverse_simple(self, x):
+        """
+        :type x: int
+        :rtype: int
+        """
+        sum = 0
+        if x >= 0:
+            while x != 0:
+                sum = sum * 10 + x % 10
+                x = x // 10
+            return  sum if sum <= 2**31 - 1 else 0
+        else:
+            while x != 0:
+                sum = sum * 10 + x % 10
+                x = x // 10
+            return  -sum if -sum >= -2**31 else 0
 
     # 未验证，仅提供思路
     def reverse_simple(self, x):

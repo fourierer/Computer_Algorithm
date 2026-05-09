@@ -6,7 +6,7 @@ class Solution(object):
         """
         result_str = ''
         n = len(s)
-        # dp[i][j]表示字符串索引从i到j是否为回文字串
+        # dp[i][j]表示字符串索引从i到j是否为回文子串
         dp = [[0]*n for _ in range(n)]
         # print(dp)
         # 注意：不能按照常规双循环遍历i,j，因为递推公式中会涉及i+1，此时dp[i+1][j-1]还没有赋值

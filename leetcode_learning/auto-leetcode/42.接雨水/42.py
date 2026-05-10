@@ -13,7 +13,7 @@ class Solution:
         left_max, right_max = 0, 0
         water = 0
 
-        while left < right:
+        while left < right: # 不用取等号，因为左右指针最终汇聚的位置一定是数组最高点
             if height[left] < height[right]:
                 # 左侧较矮，左侧最大值决定当前贡献
                 if height[left] >= left_max:

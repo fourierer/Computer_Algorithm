@@ -7,15 +7,15 @@
 
 class Solution:
     def removeElement(self, nums: list[int], val: int) -> int:
-        slow = 0  # 慢指针：下一个保留元素应放的位置
+        slow = -1  # 慢指针：指向当前保留元素的末尾位置
 
         for fast in range(len(nums)):
-            # 只有非 val 元素才保留到前面
+            # 发现非 val 元素，保留到前面
             if nums[fast] != val:
-                nums[slow] = nums[fast]
-                slow += 1
+                slow += 1  # 慢指针前进一步
+                nums[slow] = nums[fast]  # 将新元素放到正确位置
 
-        return slow
+        return slow + 1
 
 
 class Solution2:

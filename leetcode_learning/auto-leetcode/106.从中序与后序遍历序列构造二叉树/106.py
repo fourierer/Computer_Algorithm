@@ -26,17 +26,14 @@ class Solution:
             root_val = postorder[post_r]
             # 在中序遍历中定位根节点位置
             in_root = index[root_val]
-
-            root = TreeNode(root_val)
-
             # 左子树的节点数目 = 中序遍历中根节点左边的元素个数
             size_left = in_root - in_l
 
+            root = TreeNode(root_val)
             # 递归构建左子树
             root.left = build(in_l, in_root - 1, post_l, post_l + size_left - 1)
             # 递归构建右子树
             root.right = build(in_root + 1, in_r, post_l + size_left, post_r - 1)
-
             return root
 
         n = len(inorder)

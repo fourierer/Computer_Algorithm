@@ -18,32 +18,23 @@ class Solution:
         # 构造哈希映射，O(1) 定位中序遍历中根节点的位置
         index = {val: i for i, val in enumerate(inorder)}
 
-        def myBuildTree(preorder_left: int, preorder_right: int,
-                        inorder_left: int, inorder_right: int) -> Optional[TreeNode]:
-            if preorder_left > preorder_right:
+        def build(in_l: int, in_r: int, pre_l: int, pre_r: int) -> Optional[TreeNode]:
+            if in_l > in_r:
                 return None
 
             # 前序遍历的第一个节点就是当前子树的根节点
-            preorder_root = preorder_left
+            root_val = preorder[pre_l]
             # 在中序遍历中定位根节点位置
-            inorder_root = index[preorder[preorder_root]]
-
-            root = TreeNode(preorder[preorder_root])
-
+            in_root = index[root_val]
             # 左子树的节点数目 = 中序遍历中根节点左边的元素个数
-            size_left_subtree = inorder_root - inorder_left
+            size_left = in_root - in_l
 
+            root = TreeNode(root_val)
             # 递归构建左子树
-            root.left = myBuildTree(
-                preorder_left + 1, preorder_left + size_left_subtree,
-                inorder_left, inorder_root - 1
-            )
+            root.left = build(in_l, in_root - 1, pre_l + 1, pre_l + size_left)
             # 递归构建右子树
-            root.right = myBuildTree(
-                preorder_left + size_left_subtree + 1, preorder_right,
-                inorder_root + 1, inorder_right
-            )
+            root.right = build(in_root + 1, in_r, pre_l + size_left + 1, pre_r)
             return root
 
-        n = len(preorder)
-        return myBuildTree(0, n - 1, 0, n - 1)
+        n = len(inorder)
+        return build(0, n - 1, 0, n - 1)

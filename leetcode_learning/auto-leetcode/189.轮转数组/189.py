@@ -31,6 +31,11 @@ class SolutionExtra:
         tmp = [0] * n
         for i in range(n):
             tmp[(i + k) % n] = nums[i]
+        # 必须用 nums[:] = tmp 而非 nums = tmp：
+        # nums[:] = tmp  → 原地修改，把 tmp 的元素逐个拷贝到 nums 指向的列表中
+        #                   外部调用者持有的仍是同一个列表对象，内容已更新
+        # nums = tmp      → 仅让局部变量 nums 指向了新列表 tmp
+        #                   原列表对象不变，外部调用者看不到任何修改
         nums[:] = tmp
 
 

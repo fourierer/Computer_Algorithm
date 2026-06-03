@@ -42,6 +42,9 @@ class Solution:
         # 删除倒数第 n 个结点
         slow.next = slow.next.next
 
+        # 必须返回 dummy.next 而非 head：
+        # 当删除的是头结点时，head 指向的旧头已被移除，
+        # 而 dummy.next 已更新为新头；若 return head 会返回被删除的旧头
         return dummy.next
 
     def removeNthFromEnd_two_pass(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:

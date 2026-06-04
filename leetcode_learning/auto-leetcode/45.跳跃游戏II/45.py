@@ -13,11 +13,13 @@ class Solution:
         step = 0       # 跳跃次数
         end = 0        # 当前这一步的边界
 
+        # 只遍历到 n-2，因为到达最后一个位置不需要再跳
+        # 如果遍历到 n-1，当 i == end 时会多算一次跳跃
         for i in range(n - 1):
             # 只有当前位置可达时，才更新最远位置
             if i <= rightmost:
                 rightmost = max(rightmost, i + nums[i])
-            # 遍历到边界，必须再跳一步进入下一层
+            # 遍历到当前步的边界，必须再跳一步进入下一层
             if i == end:
                 end = rightmost
                 step += 1

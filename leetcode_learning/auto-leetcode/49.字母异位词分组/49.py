@@ -10,6 +10,7 @@ from typing import List
 
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        # defaultdict(list)：访问不存在的键时自动创建空列表作为默认值，避免 KeyError
         mp = collections.defaultdict(list)
 
         for st in strs:

@@ -3,31 +3,30 @@
 难度：中等
 链接：https://leetcode.cn/problems/group-anagrams/
 """
-
-import collections
 from typing import List
 
 
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        # defaultdict(list)：访问不存在的键时自动创建空列表作为默认值，避免 KeyError
-        mp = collections.defaultdict(list)
-
+        # 用 26 维计数数组作为 key：字母组成相同的字符串计数数组相同 → 分到一组
+        # tuple 化才能哈希（list 不可哈希不能做 dict 的键）
+        count_dict = {}
         for st in strs:
             counts = [0] * 26
             for ch in st:
-                # ord是python内置函数，用来得到字符的 ASCII / Unicode 编码值
-                counts[ord(ch) - ord("a")] += 1
-            # 需要将 list 转换成 tuple 才能进行哈希，因为python字典中的键要求是不可变的
-            mp[tuple(counts)].append(st)
+                index = ord(ch) - ord('a')
+                counts[index] += 1
+            # get(key, default)：键不存在时返回默认空列表，避免 KeyError
+            cur_list = count_dict.get(tuple(counts), [])
+            cur_list.append(st)
+            count_dict[tuple(counts)] = cur_list
 
-        return list(mp.values())
+        return list(count_dict.values())
 
 
 if __name__ == "__main__":
     sol = Solution()
     result = sol.groupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"])
-    # 按分组大小排序后比较
     assert sorted([sorted(g) for g in result]) == sorted([sorted(g) for g in [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]]])
     assert sol.groupAnagrams([""]) == [[""]]
     assert sol.groupAnagrams(["a"]) == [["a"]]

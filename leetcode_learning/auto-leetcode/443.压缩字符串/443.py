@@ -8,34 +8,32 @@ from typing import List
 
 class Solution:
     def compress(self, chars: List[str]) -> int:
-        # 核心逻辑与统计连续字符的写法一致（cur_char + cur_count 遍历）
-        # 关键改动：原地写入 chars，而非新建 result 列表
-        #          且长度为 1 的组只写字符不写计数（题目要求）
-        n = len(chars)
-        if n == 0:
-            return 0
-
-        write = 0              # 写指针：当前写入位置
-        cur_char = chars[0]    # 当前连续段的字符
-        cur_count = 1          # 当前连续段的计数
-
-        for i in range(1, n + 1):
-            # i == n 处理最后一组；字符不同则一段结束
-            if i == n or chars[i] != cur_char:
-                # 写入字符
-                chars[write] = cur_char
-                write += 1
-                # 长度 > 1 才写计数（题目要求长度为 1 的组只写字符）
-                if cur_count > 1:
-                    # 多位数需逐位写入（如 12 → '1','2'）
-                    for digit in str(cur_count):
-                        chars[write] = digit
-                        write += 1
-                # 开始新的一段
-                if i < n:
-                    cur_char = chars[i]
-                    cur_count = 1
-            else:
+        # 借用统计连续字符的核心代码（cur_char + cur_count）
+        # 唯一改动：count==1 只写字符，count>1 写"计数+字符"（题目要求）
+        result = []
+        cur_char = chars[0]
+        cur_count = 1
+        for i in range(1, len(chars)):
+            if chars[i] == cur_char:
                 cur_count += 1
-
-        return write
+            else:
+                if cur_count == 1:
+                    result.append(cur_char)
+                else:
+                    result.append(cur_char)
+                    # extend+list 拆开多位数的每一位为独立字符元素
+                    # 如 count=12 → list(str(12))=['1','2']
+                    # 若用 append(str(12)) 会得到 ['b','12']（'12'长度为2，不符合单字符要求）
+                    result.extend(list(str(cur_count)))
+                cur_char = chars[i]
+                cur_count = 1
+        # 最后一段
+        if cur_count == 1:
+            result.append(cur_char)
+        else:
+            result.append(cur_char)
+            # 同上：多位数需拆成独立字符
+            result.extend(list(str(cur_count)))
+        # 原地写回 chars
+        chars[:] = result
+        return len(result)

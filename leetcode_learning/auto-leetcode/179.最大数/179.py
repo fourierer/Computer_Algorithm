@@ -31,3 +31,18 @@ class Solution:
         # 拼接后处理全零的情况（前导零）
         result = ''.join(strs)
         return '0' if result[0] == '0' else result
+
+
+class SolutionBubble:
+    def largestNumber(self, nums: List[int]) -> str:
+        # 冒泡排序版：两层 for 循环，比较用 a+b vs b+a
+        # 若 a+b < b+a，说明 a 应排在 b 后面 → 交换（大的往前冒泡）
+        strs = [str(num) for num in nums]
+        n = len(strs)
+        for i in range(n):
+            for j in range(n - 1):
+                # 拼接后比较：若 strs[j]+strs[j+1] 字典序更小，则交换
+                if strs[j] + strs[j + 1] < strs[j + 1] + strs[j]:
+                    strs[j], strs[j + 1] = strs[j + 1], strs[j]
+        result = ''.join(strs)
+        return '0' if result[0] == '0' else result

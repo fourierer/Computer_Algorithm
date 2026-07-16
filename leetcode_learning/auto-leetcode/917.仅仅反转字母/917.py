@@ -13,15 +13,14 @@ class Solution:
         a = list(s)
         left, right = 0, len(a) - 1
         while left < right:
-            # 左指针跳过非字母
-            if not a[left].isalpha():
+            # 左指针跳过非字母（独立 while，可连续移动）
+            while left < right and not a[left].isalpha():
                 left += 1
-            # 右指针跳过非字母
-            elif not a[right].isalpha():
+            # 右指针跳过非字母（独立 while，可连续移动）
+            while left < right and not a[right].isalpha():
                 right -= 1
-            else:
-                # 两个都是字母，交换
-                a[left], a[right] = a[right], a[left]
-                left += 1
-                right -= 1
+            # 两个都是字母，交换
+            a[left], a[right] = a[right], a[left]
+            left += 1
+            right -= 1
         return ''.join(a)
